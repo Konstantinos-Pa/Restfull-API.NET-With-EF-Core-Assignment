@@ -4,7 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Assignment.Controllers
 {
-    public class AddressController : Controller
+
+    [Route("api/[controller]")]
+    [ApiController]
+    public class AddressController : ControllerBase
     {
 
         private readonly IAddressRepository _addressRepository;

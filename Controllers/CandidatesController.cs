@@ -4,7 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Assignment.Controllers
 {
-    public class CandidatesController : Controller
+
+    [Route("api/[controller]")]
+    [ApiController]
+    public class CandidatesController : ControllerBase
     {
         private readonly ICandidatesRepository _candidatesRepository;
         public CandidatesController(ICandidatesRepository candidatesRepository)
