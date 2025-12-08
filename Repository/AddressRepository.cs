@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Assignment.Repository
 {
-    public class AddressRepository
+    public class AddressRepository : IAddressRepository
     {
         private readonly PostgresDbContext _context;
         public AddressRepository(PostgresDbContext context)
@@ -42,12 +42,13 @@ namespace Assignment.Repository
             return address;
         }
 
-        public async Task UpdateAddressAsync(int id,Address address)
+        public async Task UpdateAddressAsync(int id, Address address)
         {
             if (id == null || id == 0)
             {
                 throw new ArgumentNullException(nameof(id) + "Is Null (Thrown from UpdateAddressAsyncc)");
-            } else if (address == null)
+            }
+            else if (address == null)
             {
                 throw new ArgumentNullException(nameof(address) + "Is Null (Thrown from UpdateAddressAsync)");
             }

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Assignment.Repository
 {
-    public class CandidatesRepository
+    public class CandidatesRepository : ICandidatesRepository
     {
         private readonly PostgresDbContext _context;
         public CandidatesRepository(PostgresDbContext context)
@@ -24,24 +24,25 @@ namespace Assignment.Repository
                 throw new ArgumentNullException(nameof(id) + "Is Null (Thrown from GetCandidateByIdAsync)");
             }
             Candidate? candidate = await _context.Candidates.FirstOrDefaultAsync(c => c.CandidateNumber == id);
-            if (candidate == null) {
+            if (candidate == null)
+            {
                 throw new Exception("Candidate not found (Thrown from GetCandidateByIdAsync)");
             }
-                return candidate;
+            return candidate;
         }
 
         public async Task AddCandidateAsync(Candidate candidate)
         {
             if (candidate == null)
             {
-                throw new ArgumentNullException(nameof(candidate)+ "Is Null (Thrown from AddCandidateAsync)");
+                throw new ArgumentNullException(nameof(candidate) + "Is Null (Thrown from AddCandidateAsync)");
             }
             _context.Candidates.Add(candidate);
             await _context.SaveChangesAsync();
 
         }
 
-        public async Task UpdateCandidateAsync(int id,Candidate candidate)
+        public async Task UpdateCandidateAsync(int id, Candidate candidate)
         {
             if (candidate == null)
             {
