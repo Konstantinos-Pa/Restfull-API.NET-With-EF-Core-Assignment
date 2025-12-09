@@ -116,15 +116,8 @@ namespace Assignment.Controllers
         {
             try
             {
-                if (ModelState.IsValid)
-                {
-                    await _candidatesRepository.DeleteCandidateAsync(id);
-                    return NoContent();
-                }
-                    else
-                {
-                    return BadRequest(ModelState);
-                }
+                await _candidatesRepository.DeleteCandidateAsync(id);
+                return NoContent();
             }
             catch (ArgumentNullException ex)
             {

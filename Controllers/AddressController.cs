@@ -64,8 +64,8 @@ namespace Assignment.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var createdAddress = await _addressRepository.AddAddressAsync(address);
-                    return CreatedAtAction(nameof(GetAddressById), new { id = createdAddress.Id }, createdAddress);
+                    await _addressRepository.AddAddressAsync(address);
+                    return CreatedAtAction(nameof(GetAddressById), new { id = address.Id }, address);
                 }
                 else
                 {

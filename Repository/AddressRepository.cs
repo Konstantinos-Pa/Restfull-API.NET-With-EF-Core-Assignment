@@ -17,7 +17,7 @@ namespace Assignment.Repository
             return await _context.Addresses.ToListAsync();
         }
 
-        public async Task<Address?> GetAddressByIdAsync(int id)
+        public async Task<Address> GetAddressByIdAsync(int id)
         {
             if (id == null || id == 0)
             {
@@ -31,7 +31,7 @@ namespace Assignment.Repository
             return address;
         }
 
-        public async Task<Address> AddAddressAsync(Address address)
+        public async Task AddAddressAsync(Address address)
         {
             if (address == null)
             {
@@ -39,7 +39,6 @@ namespace Assignment.Repository
             }
             await _context.Addresses.AddAsync(address);
             await _context.SaveChangesAsync();
-            return address;
         }
 
         public async Task UpdateAddressAsync(int id, Address address)
@@ -52,7 +51,7 @@ namespace Assignment.Repository
             {
                 throw new ArgumentNullException(nameof(address) + "Is Null (Thrown from UpdateAddressAsync)");
             }
-            Address? existingAddress = await GetAddressByIdAsync(id);
+            Address existingAddress = await GetAddressByIdAsync(id);
             existingAddress.City = address.City;
             existingAddress.Street = address.Street;
             existingAddress.State = address.State;
@@ -69,11 +68,7 @@ namespace Assignment.Repository
             {
                 throw new ArgumentNullException(nameof(id) + "Is Null (Thrown from DeleteAddressAsync)");
             }
-            Address? address = await _context.Addresses.FirstOrDefaultAsync(a => a.Id == id);
-            if (address == null)
-            {
-                throw new Exception("Address not found (Thrown from DeleteAddressAsync)");
-            }
+            Address address = await GetAddressByIdAsync(id);
             _context.Addresses.Remove(address);
             await _context.SaveChangesAsync();
         }

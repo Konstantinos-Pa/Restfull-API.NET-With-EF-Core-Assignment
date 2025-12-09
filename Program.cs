@@ -19,6 +19,7 @@ namespace Assignment
 
             builder.Services.AddTransient<ICandidatesRepository, CandidatesRepository>();
             builder.Services.AddTransient<IAddressRepository, AddressRepository>();
+            builder.Services.AddTransient<ICertificateRepository,CertificatesRepository>();
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
