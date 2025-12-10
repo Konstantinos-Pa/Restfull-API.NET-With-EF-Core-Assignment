@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Assignment.Repository
 {
-    public class PhotoIdRepository
+    public class PhotoIdRepository:IPhotoIdRepository
     {
         private readonly PostgresDbContext _context;
         public PhotoIdRepository(PostgresDbContext context)
@@ -17,9 +17,9 @@ namespace Assignment.Repository
             return await _context.photoIds.ToListAsync();
         }
 
-        public async Task<PhotoId?> GetPhotoIdByIdAsync(int id)
+        public async Task<PhotoId> GetPhotoIdByIdAsync(int id)
         {
-            if (id == null || id == 0)
+            if (id == 0)
             {
                 throw new ArgumentNullException(nameof(id) + "Is Null (Thrown from GetPhotoIdByIdAsync)");
             }
@@ -41,31 +41,33 @@ namespace Assignment.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdatePhotoIdAsync(int id,PhotoId photoId)
+        public async Task UpdatePhotoIdAsync(int id, PhotoId photoId)
         {
             if (photoId == null)
             {
                 throw new ArgumentNullException(nameof(photoId) + "Is Null (Thrown from UpdatePhotoIdAsync)");
             }
-            else if (id == null || id == 0)
+            else if (id == 0)
             {
                 throw new ArgumentNullException(nameof(id) + "Is Null (Thrown from UpdatePhotoIdAsync)");
             }
-            PhotoId? existingPhotoId = await GetPhotoIdByIdAsync(id);
+            PhotoId existingPhotoId = await GetPhotoIdByIdAsync(id);
+
             existingPhotoId.PhotoIdImage = photoId.PhotoIdImage;
             existingPhotoId.PhotoIdNumber = photoId.PhotoIdNumber;
             existingPhotoId.DateOfIssue = photoId.DateOfIssue;
             existingPhotoId.CandidateNumber = photoId.CandidateNumber;
+
             await _context.SaveChangesAsync();
         }
 
         public async Task DeletePhotoIdAsync(int id)
         {
-            if (id == null || id == 0)
+            if (id == 0)
             {
                 throw new ArgumentNullException(nameof(id) + "Is Null (Thrown from DeletePhotoIdAsync)");
             }
-            PhotoId? photoId = await GetPhotoIdByIdAsync(id);
+            PhotoId photoId = await GetPhotoIdByIdAsync(id);
             _context.photoIds.Remove(photoId);
             await _context.SaveChangesAsync();
         }

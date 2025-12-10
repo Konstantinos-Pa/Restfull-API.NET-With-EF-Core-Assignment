@@ -19,7 +19,7 @@ namespace Assignment.Repository
 
         public async Task<Address> GetAddressByIdAsync(int id)
         {
-            if (id == null || id == 0)
+            if (id == 0)
             {
                 throw new ArgumentNullException(nameof(id) + "Is Null (Thrown from GetAddressByIdAsync)");
             }
@@ -43,7 +43,7 @@ namespace Assignment.Repository
 
         public async Task UpdateAddressAsync(int id, Address address)
         {
-            if (id == null || id == 0)
+            if (id == 0)
             {
                 throw new ArgumentNullException(nameof(id) + "Is Null (Thrown from UpdateAddressAsyncc)");
             }
@@ -64,7 +64,7 @@ namespace Assignment.Repository
 
         public async Task DeleteAddressAsync(int id)
         {
-            if (id == null || id == 0)
+            if (id == 0)
             {
                 throw new ArgumentNullException(nameof(id) + "Is Null (Thrown from DeleteAddressAsync)");
             }

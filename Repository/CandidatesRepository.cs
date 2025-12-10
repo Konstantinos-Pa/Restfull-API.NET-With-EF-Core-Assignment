@@ -17,9 +17,9 @@ namespace Assignment.Repository
             return await _context.Candidates.ToListAsync();
         }
 
-        public async Task<Candidate?> GetCandidateByIdAsync(int id)
+        public async Task<Candidate> GetCandidateByIdAsync(int id)
         {
-            if (id == null || id == 0)
+            if (id == 0)
             {
                 throw new ArgumentNullException(nameof(id) + "Is Null (Thrown from GetCandidateByIdAsync)");
             }
@@ -48,11 +48,11 @@ namespace Assignment.Repository
             {
                 throw new ArgumentNullException(nameof(candidate) + "Is Null (Thrown from UpdateCandidateAsync)");
             }
-            else if (id == null || id == 0)
+            else if (id == 0)
             {
                 throw new ArgumentNullException(nameof(id) + "Is Null (Thrown from UpdateCandidateAsync)");
             }
-            Candidate? existingCandidate = await GetCandidateByIdAsync(id);
+            Candidate existingCandidate = await GetCandidateByIdAsync(id);
             existingCandidate.FirstName = candidate.FirstName;
             existingCandidate.LastName = candidate.LastName;
             existingCandidate.MiddleName = candidate.MiddleName;
@@ -66,11 +66,11 @@ namespace Assignment.Repository
 
         public async Task DeleteCandidateAsync(int id)
         {
-            if (id == null || id == 0)
+            if (id == 0)
             {
                 throw new ArgumentNullException(nameof(id) + "Is Null (Thrown from DeleteCandidateAsync)");
             }
-            Candidate? existingCandidate = await GetCandidateByIdAsync(id);
+            Candidate existingCandidate = await GetCandidateByIdAsync(id);
             _context.Candidates.Remove(existingCandidate);
 
             await _context.SaveChangesAsync();

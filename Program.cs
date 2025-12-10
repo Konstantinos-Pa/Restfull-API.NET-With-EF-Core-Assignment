@@ -17,9 +17,11 @@ namespace Assignment
                 option.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
 
-            builder.Services.AddTransient<ICandidatesRepository, CandidatesRepository>();
-            builder.Services.AddTransient<IAddressRepository, AddressRepository>();
-            builder.Services.AddTransient<ICertificateRepository,CertificatesRepository>();
+            builder.Services.AddScoped<ICandidatesRepository, CandidatesRepository>();
+            builder.Services.AddScoped<IAddressRepository, AddressRepository>();
+            builder.Services.AddScoped<ICertificateRepository, CertificatesRepository>();
+            builder.Services.AddScoped<IMobileRepository,MobileRepository>();
+            builder.Services.AddScoped<IPhotoIdRepository,PhotoIdRepository>();
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

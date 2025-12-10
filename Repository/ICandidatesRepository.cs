@@ -6,7 +6,7 @@ namespace Assignment.Repository
     {
         Task AddCandidateAsync(Candidate candidate);
         Task DeleteCandidateAsync(int id);
-        Task<Candidate?> GetCandidateByIdAsync(int id);
+        Task<Candidate> GetCandidateByIdAsync(int id);
         Task<List<Candidate>> GetCandidatesAsync();
         Task UpdateCandidateAsync(int id, Candidate candidate);
     }

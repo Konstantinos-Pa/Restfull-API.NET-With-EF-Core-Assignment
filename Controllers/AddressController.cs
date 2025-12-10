@@ -17,7 +17,7 @@ namespace Assignment.Controllers
 
         }
 
-        [HttpGet("api/addresses")]
+        [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAddresses()
@@ -33,11 +33,11 @@ namespace Assignment.Controllers
             }
         }
 
-        [HttpGet("api/addresses/{id}")]
+        [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetAddressById(int id)
+        public async Task<IActionResult> GetAddressById([FromRoute] int id)
         {
             try
             {
@@ -57,7 +57,7 @@ namespace Assignment.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpPost("api/addresses")]
+        [HttpPost]
         public async Task<IActionResult> AddAddress([FromBody] Address address)
         {
             try
@@ -85,8 +85,8 @@ namespace Assignment.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpPut("api/addresses/{id}")]
-        public async Task<IActionResult> UpdateAddress(int id, [FromBody] Address address)
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> UpdateAddress([FromRoute] int id, [FromBody] Address address)
         {
             try
             {
@@ -113,8 +113,8 @@ namespace Assignment.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpDelete("api/addresses/{id}")]
-        public async Task<IActionResult> DeleteAddress(int id)
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> DeleteAddress([FromRoute] int id)
         {
             try
             {

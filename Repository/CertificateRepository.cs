@@ -13,16 +13,16 @@ namespace Assignment.Repository
             _context = context;
         }
 
-        public async Task<List<Certificate>> GetCertificateAsync()
+        public async Task<List<Certificate>> GetCertificatesAsync()
         {
             return await _context.Certificates.ToListAsync();
         }
 
-        public async Task<Certificate> GetCertificateAsync(int id)
+        public async Task<Certificate> GetCertificateByIdAsync(int id)
         {
-            if (id == 0 || id == null)
+            if (id == 0)
             {
-                throw new ArgumentNullException(nameof(id) + " is null or zero (Thrown from GetCertificateAsync)");
+                throw new ArgumentNullException(nameof(id) + " is null or zero (Thrown from GetCertificateByIdAsync)");
             }
 
             Certificate? certificate = await _context.Certificates
@@ -30,36 +30,36 @@ namespace Assignment.Repository
 
             if (certificate == null)
             {
-                throw new Exception("Certificate not found (Thrown from GetCertificateAsync)");
+                throw new Exception("Certificate not found (Thrown from GetCertificateByIdAsync)");
             }
 
             return certificate;
         }
 
-        public async Task PostCertificateAsync(Certificate certificate)
+        public async Task AddCertificateAsync(Certificate certificate)
         {
             if (certificate == null)
             {
-                throw new ArgumentNullException(nameof(certificate) + " is null (Thrown from PostCertificateAsync)");
+                throw new ArgumentNullException(nameof(certificate) + " is null (Thrown from AddCertificateAsync)");
             }
 
             await _context.Certificates.AddAsync(certificate);
             await _context.SaveChangesAsync();
         }
 
-        public async Task PutCertificateAsync(int id, Certificate certificate)
+        public async Task UpdateCertificateAsync(int id, Certificate certificate)
         {
             if (certificate == null)
             {
-                throw new ArgumentNullException(nameof(certificate) + " is null (Thrown from PutCertificateAsync)");
+                throw new ArgumentNullException(nameof(certificate) + " is null (Thrown from UpdateCertificateAsync)");
             }
 
             if (id == 0)
             {
-                throw new ArgumentNullException(nameof(id) + " is zero (Thrown from PutCertificateAsync)");
+                throw new ArgumentNullException(nameof(id) + " is zero (Thrown from UpdateCertificateAsync)");
             }
 
-            Certificate existingCertificate = await GetCertificateAsync(id);
+            Certificate existingCertificate = await GetCertificateByIdAsync(id);
 
             // Update fields
             existingCertificate.Title = certificate.Title;
@@ -81,7 +81,7 @@ namespace Assignment.Repository
                 throw new ArgumentNullException(nameof(id) + " is zero (Thrown from DeleteCertificateAsync)");
             }
 
-            Certificate existingCertificate = await GetCertificateAsync(id);
+            Certificate existingCertificate = await GetCertificateByIdAsync(id);
 
             _context.Certificates.Remove(existingCertificate);
             await _context.SaveChangesAsync();
