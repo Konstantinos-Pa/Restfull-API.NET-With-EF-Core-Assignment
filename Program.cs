@@ -20,8 +20,9 @@ namespace Assignment
             builder.Services.AddScoped<ICandidatesRepository, CandidatesRepository>();
             builder.Services.AddScoped<IAddressRepository, AddressRepository>();
             builder.Services.AddScoped<ICertificateRepository, CertificatesRepository>();
-            builder.Services.AddScoped<IMobileRepository,MobileRepository>();
-            builder.Services.AddScoped<IPhotoIdRepository,PhotoIdRepository>();
+            builder.Services.AddScoped<IMobileRepository, MobileRepository>();
+            builder.Services.AddScoped<IPhotoIdRepository, PhotoIdRepository>();
+            builder.Services.AddScoped<ICandidatesAnalyticsRepository, CandidatesAnalyticsRepository>();
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

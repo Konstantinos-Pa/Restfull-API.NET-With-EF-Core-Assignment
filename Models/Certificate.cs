@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Assignment.Models
@@ -30,13 +31,13 @@ namespace Assignment.Models
 
         public int PercentageScore { get; set; }
 
-        public string? AssessmentResultLabel { get; set; }
+        public bool AssessmentResultLabel { get; set; }
 
         // Foreign Key for Candidate M-M
         public ICollection<Candidate>? Candidates { get; set; }
 
         public ICollection<CandidatesAnalytics>? CandidatesAnalytics { get; set; }
-
-
+       
+        
     }
 }

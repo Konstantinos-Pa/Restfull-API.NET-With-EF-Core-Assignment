@@ -19,9 +19,9 @@ namespace Assignment.Repository
 
         public async Task<Address> GetAddressByIdAsync(int id)
         {
-            if (id == 0)
+            if (id <= 0)
             {
-                throw new ArgumentNullException(nameof(id) + "Is Null (Thrown from GetAddressByIdAsync)");
+                throw new ArgumentNullException(nameof(id) + " must be greater than zero. (Thrown from GetAddressByIdAsync)");
             }
             Address? address = await _context.Addresses.FirstOrDefaultAsync(a => a.Id == id);
             if (address == null)
@@ -43,9 +43,9 @@ namespace Assignment.Repository
 
         public async Task UpdateAddressAsync(int id, Address address)
         {
-            if (id == 0)
+            if (id <= 0)
             {
-                throw new ArgumentNullException(nameof(id) + "Is Null (Thrown from UpdateAddressAsyncc)");
+                throw new ArgumentNullException(nameof(id) + " must be greater than zero. (Thrown from UpdateAddressAsyncc)");
             }
             else if (address == null)
             {
@@ -64,9 +64,9 @@ namespace Assignment.Repository
 
         public async Task DeleteAddressAsync(int id)
         {
-            if (id == 0)
+            if (id <= 0)
             {
-                throw new ArgumentNullException(nameof(id) + "Is Null (Thrown from DeleteAddressAsync)");
+                throw new ArgumentNullException(nameof(id) + " must be greater than zero. (Thrown from DeleteAddressAsync)");
             }
             Address address = await GetAddressByIdAsync(id);
             _context.Addresses.Remove(address);

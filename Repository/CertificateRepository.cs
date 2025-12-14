@@ -20,9 +20,9 @@ namespace Assignment.Repository
 
         public async Task<Certificate> GetCertificateByIdAsync(int id)
         {
-            if (id == 0)
+            if (id <= 0)
             {
-                throw new ArgumentNullException(nameof(id) + " is null or zero (Thrown from GetCertificateByIdAsync)");
+                throw new ArgumentNullException(nameof(id) + " must be greater than zero. (Thrown from GetCertificateByIdAsync)");
             }
 
             Certificate? certificate = await _context.Certificates
@@ -54,9 +54,9 @@ namespace Assignment.Repository
                 throw new ArgumentNullException(nameof(certificate) + " is null (Thrown from UpdateCertificateAsync)");
             }
 
-            if (id == 0)
+            if (id <= 0)
             {
-                throw new ArgumentNullException(nameof(id) + " is zero (Thrown from UpdateCertificateAsync)");
+                throw new ArgumentNullException(nameof(id) + " must be greater than zero. (Thrown from UpdateCertificateAsync)");
             }
 
             Certificate existingCertificate = await GetCertificateByIdAsync(id);
@@ -76,9 +76,9 @@ namespace Assignment.Repository
 
         public async Task DeleteCertificateAsync(int id)
         {
-            if (id == 0)
+            if (id <= 0)
             {
-                throw new ArgumentNullException(nameof(id) + " is zero (Thrown from DeleteCertificateAsync)");
+                throw new ArgumentNullException(nameof(id) + " must be greater than zero. (Thrown from DeleteCertificateAsync)");
             }
 
             Certificate existingCertificate = await GetCertificateByIdAsync(id);
@@ -86,5 +86,14 @@ namespace Assignment.Repository
             _context.Certificates.Remove(existingCertificate);
             await _context.SaveChangesAsync();
         }
+
+       
+
+
     }
+
+
+
+
+
 }

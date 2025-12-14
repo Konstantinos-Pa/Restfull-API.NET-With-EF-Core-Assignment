@@ -19,9 +19,9 @@ namespace Assignment.Repository
 
         public async Task<PhotoId> GetPhotoIdByIdAsync(int id)
         {
-            if (id == 0)
+            if (id <= 0)
             {
-                throw new ArgumentNullException(nameof(id) + "Is Null (Thrown from GetPhotoIdByIdAsync)");
+                throw new ArgumentNullException(nameof(id) + " must be greater than zero. (Thrown from GetPhotoIdByIdAsync)");
             }
             PhotoId? photoId = await _context.photoIds.FirstOrDefaultAsync(p => p.Id == id);
             if (photoId == null)
@@ -47,9 +47,9 @@ namespace Assignment.Repository
             {
                 throw new ArgumentNullException(nameof(photoId) + "Is Null (Thrown from UpdatePhotoIdAsync)");
             }
-            else if (id == 0)
+            else if (id <= 0)
             {
-                throw new ArgumentNullException(nameof(id) + "Is Null (Thrown from UpdatePhotoIdAsync)");
+                throw new ArgumentNullException(nameof(id) + " must be greater than zero. (Thrown from UpdatePhotoIdAsync)");
             }
             PhotoId existingPhotoId = await GetPhotoIdByIdAsync(id);
 
@@ -63,9 +63,9 @@ namespace Assignment.Repository
 
         public async Task DeletePhotoIdAsync(int id)
         {
-            if (id == 0)
+            if (id <= 0)
             {
-                throw new ArgumentNullException(nameof(id) + "Is Null (Thrown from DeletePhotoIdAsync)");
+                throw new ArgumentNullException(nameof(id) + " must be greater than zero. (Thrown from DeletePhotoIdAsync)");
             }
             PhotoId photoId = await GetPhotoIdByIdAsync(id);
             _context.photoIds.Remove(photoId);

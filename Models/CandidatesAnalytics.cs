@@ -17,5 +17,6 @@ namespace Assignment.Models
         public int CertificateId { get; set; }  
         public Certificate? Certificate { get; set; }
 
+
     }
 }

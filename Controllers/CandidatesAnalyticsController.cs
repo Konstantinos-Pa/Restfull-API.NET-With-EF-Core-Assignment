@@ -6,25 +6,25 @@ namespace Assignment.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CertificatesController : ControllerBase
+    public class CandidatesAnalyticsController : ControllerBase
     {
-        private readonly ICertificateRepository _context;
+        private readonly ICandidatesAnalyticsRepository _repository;
 
-        public CertificatesController(ICertificateRepository context)
+        public CandidatesAnalyticsController(ICandidatesAnalyticsRepository repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
-        // GET: api/Certificates
+        // GET ALL
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetCertifiicate()
+        public async Task<IActionResult> GetAll()
         {
             try
             {
-                var certificates = await _context.GetCertificatesAsync();
-                return Ok(certificates);
+                var candidatesAnalytics = await _repository.GetCandidatesAnalyticsAsync();
+                return Ok(candidatesAnalytics);
             }
             catch (Exception ex)
             {
@@ -32,16 +32,17 @@ namespace Assignment.Controllers
             }
         }
 
+        // GET BY ID
         [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetCertificateById([FromRoute] int id)
+        public async Task<IActionResult> GetId([FromRoute] int id)
         {
             try
             {
-                var certificate = await _context.GetCertificateByIdAsync(id);
-                return Ok(certificate);
+                var candidatesAnalytics = await _repository.GetCandidatesAnalyticsByIdAsync(id);
+                return Ok(candidatesAnalytics);
             }
             catch (ArgumentNullException ex)
             {
@@ -53,67 +54,25 @@ namespace Assignment.Controllers
             }
         }
 
-        [HttpPut("{id:int}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> PutCertificate([FromRoute]int certificateId, [FromBody] Certificate certificate)
-        {
-            try
-            {
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
 
-                await _context.UpdateCertificateAsync(certificateId, certificate);
-
-                return NoContent();
-            }
-            catch (ArgumentNullException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
+        // POST
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> PostCertificate([FromBody] Certificate certificate)
+        public async Task<IActionResult> Create([FromBody] CandidatesAnalytics analytics)
         {
             try
             {
-                if (!ModelState.IsValid)
+                if (ModelState.IsValid)
+                {
+                     await _repository.AddCandidatesAnalyticsAsync(analytics);
+                    return CreatedAtAction(nameof(GetId), new { id = analytics.Id }, analytics);
+                }
+                else
                 {
                     return BadRequest(ModelState);
                 }
-
-                await _context.AddCertificateAsync(certificate);
-
-                return CreatedAtAction(nameof(GetCertifiicate), new { id = certificate.Id }, certificate);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
-
-
-        // DELETE: api/certificates/id
-        [HttpDelete("{id:int}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> DeleteCertificate([FromRoute] int id)
-        {
-            try
-            {
-                await _context.DeleteCertificateAsync(id);
-                return NoContent();
             }
             catch (ArgumentNullException ex)
             {
@@ -125,9 +84,59 @@ namespace Assignment.Controllers
             }
         }
 
-        
+        // PUT
+        [HttpPut("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] CandidatesAnalytics analytics)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    await _repository.UpdateCandidatesAnalyticsAsync(id, analytics);
+                    return NoContent();
+                }
+                else
+                {
+                    return BadRequest(ModelState);
+                }
+            }
+            catch (ArgumentNullException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+
+
         }
 
+        // DELETE
 
+        [HttpDelete("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Delete([FromRoute] int id)
+        {
+            try
+            {
+                var candidateAnalytics = await _repository.GetCandidatesAnalyticsByIdAsync(id);
+                await _repository.DeleteCandidatesAnalyticsAsync(candidateAnalytics);
+                return NoContent();
+            }
+            catch (ArgumentNullException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
     }
 }

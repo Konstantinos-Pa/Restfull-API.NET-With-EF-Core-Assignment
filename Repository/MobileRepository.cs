@@ -21,9 +21,9 @@ namespace Assignment.Repository
 
         public async Task<Mobile> GetMobileByIdAsync(int id)
         {
-            if (id == 0)
+            if (id <= 0)
             {
-                throw new ArgumentNullException(nameof(id) + "Is Null (Thrown from GetMobileByIdAsync)");
+                throw new ArgumentNullException(nameof(id) + " must be greater than zero. (Thrown from GetMobileByIdAsync)");
             }
             Mobile? mobile = await _context.Mobiles.FirstOrDefaultAsync(m => m.Id == id);
             if (mobile == null)
@@ -44,13 +44,13 @@ namespace Assignment.Repository
 
         public async Task UpdateMobileAsync(int id, Mobile mobile)
         {
-            if (id ==0)
+            if (id <=0)
             {
-                throw new ArgumentNullException(nameof(id) + " is null (Thrown from UpdateMobileAsync)");
+                throw new ArgumentNullException(nameof(id) + " must be greater than zero. (Thrown from UpdateMobileAsync)");
             }
             if (mobile == null)
             {
-                throw new ArgumentNullException(nameof(mobile), "Mobile is null (from UpdateMobileAsync)");
+                throw new ArgumentNullException(nameof(mobile), " is null (from UpdateMobileAsync)");
             }
             var existingMobile = await GetMobileByIdAsync(id);
             // UPDATE logic
@@ -63,9 +63,9 @@ namespace Assignment.Repository
 
         public async Task DeleteMobileAsync(int id)
         {
-            if (id == 0)
+            if (id <= 0)
             {
-                throw new ArgumentNullException(nameof(id) + " is zero (Thrown from DeleteMobileAsync)");
+                throw new ArgumentNullException(nameof(id) + " must be greater than zero. (Thrown from DeleteMobileAsync)");
             }
             var mobile =  await GetMobileByIdAsync(id);
             _context.Mobiles.Remove(mobile);
