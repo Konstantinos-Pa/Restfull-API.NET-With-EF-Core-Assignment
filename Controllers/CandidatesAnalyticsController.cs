@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Assignment.Models;
+using Assignment.DTOs;
 using Assignment.Repository;
+using Mapster;
 
 namespace Assignment.Controllers
 {
@@ -24,7 +26,7 @@ namespace Assignment.Controllers
             try
             {
                 var candidatesAnalytics = await _repository.GetCandidatesAnalyticsAsync();
-                return Ok(candidatesAnalytics);
+                return Ok(candidatesAnalytics.Adapt<List<CandidatesAnalyticsDTO>>());
             }
             catch (Exception ex)
             {
@@ -42,7 +44,7 @@ namespace Assignment.Controllers
             try
             {
                 var candidatesAnalytics = await _repository.GetCandidatesAnalyticsByIdAsync(id);
-                return Ok(candidatesAnalytics);
+                return Ok(candidatesAnalytics.Adapt<CandidatesAnalytics>());
             }
             catch (ArgumentNullException ex)
             {
@@ -60,14 +62,21 @@ namespace Assignment.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Create([FromBody] CandidatesAnalytics analytics)
+        public async Task<IActionResult> Create([FromBody] CandidatesAnalyticsDTO analyticsDTO)
         {
             try
             {
+                var analytics = analyticsDTO.Adapt<CandidatesAnalytics>();
                 if (ModelState.IsValid)
                 {
-                     await _repository.AddCandidatesAnalyticsAsync(analytics);
-                    return CreatedAtAction(nameof(GetId), new { id = analytics.Id }, analytics);
+                    int Id = await _repository.AddCandidatesAnalyticsAsync(analytics);
+                    var resultDto = analytics.Adapt<CandidatesAnalyticsDTO>();
+
+                    return CreatedAtAction(
+                        nameof(GetId),
+                        new { Id },
+                        resultDto
+                    );
                 }
                 else
                 {
@@ -75,6 +84,10 @@ namespace Assignment.Controllers
                 }
             }
             catch (ArgumentNullException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (ArgumentException ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -89,10 +102,11 @@ namespace Assignment.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] CandidatesAnalytics analytics)
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] CandidatesAnalyticsDTO analyticsDTO)
         {
             try
             {
+                var analytics = analyticsDTO.Adapt<CandidatesAnalytics>();
                 if (ModelState.IsValid)
                 {
                     await _repository.UpdateCandidatesAnalyticsAsync(id, analytics);
@@ -125,8 +139,7 @@ namespace Assignment.Controllers
         {
             try
             {
-                var candidateAnalytics = await _repository.GetCandidatesAnalyticsByIdAsync(id);
-                await _repository.DeleteCandidatesAnalyticsAsync(candidateAnalytics);
+                await _repository.DeleteCandidatesAnalyticsAsync(id);
                 return NoContent();
             }
             catch (ArgumentNullException ex)

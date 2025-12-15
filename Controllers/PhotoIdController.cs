@@ -1,7 +1,10 @@
-﻿using Assignment.Models;
+﻿using Assignment.DTOs;
+using Assignment.Models;
 using Assignment.Repository;
+using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace Assignment.Controllers
 {
@@ -23,7 +26,8 @@ namespace Assignment.Controllers
         {
             try
             {
-                return Ok(await _repository.GetPhotoIdsAsync());
+                var photoId = await _repository.GetPhotoIdsAsync();
+                return Ok(photoId.Adapt<List<PhotoIdDTO>>());
             }
             catch (Exception ex)
             {
@@ -40,7 +44,7 @@ namespace Assignment.Controllers
             try
             {
                 var result = await _repository.GetPhotoIdByIdAsync(id);
-                return Ok(result);
+                return Ok(result.Adapt<PhotoIdDTO>());
             }
             catch (ArgumentNullException ex)
             {
@@ -56,18 +60,33 @@ namespace Assignment.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> PostPhotoId([FromBody] PhotoId photoId)
+        public async Task<IActionResult> PostPhotoId([FromBody] PhotoIdDTO photoIdDTO)
         {
             try
             {
+                var photoId = photoIdDTO.Adapt<PhotoId>();
                 if (!ModelState.IsValid)
                 {
                     return BadRequest(ModelState);
                 }
 
-                await _repository.AddPhotoIdAsync(photoId);
-                return CreatedAtAction(nameof(GetPhotoIdById), new { id = photoId.Id }, photoId);
+                int Id = await _repository.AddPhotoIdAsync(photoId);
+                var resultDto = photoId.Adapt<PhotoIdDTO>();
 
+                return CreatedAtAction(
+                    nameof(GetPhotoIdById),
+                    new { Id },
+                    resultDto
+                );
+
+            }
+            catch (ArgumentNullException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {
@@ -79,10 +98,11 @@ namespace Assignment.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> PutPhotoId([FromRoute] int id, [FromBody] PhotoId photoId)
+        public async Task<IActionResult> PutPhotoId([FromRoute] int id, [FromBody] PhotoIdDTO photoIdDTO)
         {
             try
             {
+                var photoId = photoIdDTO.Adapt<PhotoId>();
                 if (!ModelState.IsValid)
                 {
                     return BadRequest(ModelState);

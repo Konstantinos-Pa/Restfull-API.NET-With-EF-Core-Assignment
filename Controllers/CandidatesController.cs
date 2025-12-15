@@ -1,7 +1,9 @@
 ﻿using Assignment.Models;
+using Assignment.DTOs;
 using Assignment.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Mapster;
 
 namespace Assignment.Controllers
 {
@@ -24,7 +26,7 @@ namespace Assignment.Controllers
             try
             {
                 var candidates = await _candidatesRepository.GetCandidatesAsync();
-                return Ok(candidates);
+                return Ok(candidates.Adapt<List<CandidateDTO>>());
             }
             catch (Exception ex)
             {
@@ -41,7 +43,7 @@ namespace Assignment.Controllers
             try
             {
                 var candidate = await _candidatesRepository.GetCandidateByIdAsync(id);
-                return Ok(candidate);
+                return Ok(candidate.Adapt<CandidateDTO>());
             }
             catch (ArgumentNullException ex)
             {
@@ -57,14 +59,21 @@ namespace Assignment.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> AddCandidate([FromBody] Candidate candidate)
+        public async Task<IActionResult> AddCandidate([FromBody] CandidateDTO candidateDTO)
         {
             try
             {
+                var candidate = candidateDTO.Adapt<Candidate>();
                 if (ModelState.IsValid)
                 {
-                    await _candidatesRepository.AddCandidateAsync(candidate);
-                    return CreatedAtAction(nameof(GetCandidateById), new { id = candidate.CandidateNumber }, candidate);
+                    int Id = await _candidatesRepository.AddCandidateAsync(candidate);
+                    var resultDto = candidate.Adapt<CandidateDTO>();
+
+                    return CreatedAtAction(
+                        nameof(GetCandidateById),
+                        new { Id },
+                        resultDto
+                    );
                 }
                 else
                 {
@@ -85,10 +94,11 @@ namespace Assignment.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdateCandidate([FromRoute] int id, [FromBody] Candidate candidate)
+        public async Task<IActionResult> UpdateCandidate([FromRoute] int id, [FromBody] CandidateDTO candidateDTO)
         {
             try
             {
+                var candidate = candidateDTO.Adapt<Candidate>();
                 if (ModelState.IsValid)
                 {
                     await _candidatesRepository.UpdateCandidateAsync(id, candidate);
@@ -141,7 +151,7 @@ namespace Assignment.Controllers
             {
                 var certificates = await _candidatesRepository.MarksPerTopicPerCertificateAsync(candidateNumber);
 
-                return Ok(certificates);
+                return Ok(certificates.Adapt<List<CertificateDTO>>());
             }
             catch (ArgumentNullException ex)
             {
@@ -169,7 +179,7 @@ namespace Assignment.Controllers
             {
                 var certificates = await _candidatesRepository.ObtainedCertificatesOfCandidate(candidateNumber);
 
-                return Ok(certificates);
+                return Ok(certificates.Adapt<List<CertificateDTO>>());
             }
             catch (ArgumentNullException ex)
             {
@@ -197,7 +207,7 @@ namespace Assignment.Controllers
             {
                 var certificates = await _candidatesRepository.NotObtainedCertificatesOfCandidate(id);
 
-                return Ok(certificates);
+                return Ok(certificates.Adapt<List<CertificateDTO>>());
             }
             catch (ArgumentNullException ex)
             {
@@ -224,7 +234,7 @@ namespace Assignment.Controllers
             {
                 var certificates = await _candidatesRepository.GetCertificatesByDateAsync(id);
 
-                return Ok(certificates);
+                return Ok(certificates.Adapt<List<CertificateDTO>>());
             }
             catch (ArgumentNullException ex)
             {
@@ -251,7 +261,7 @@ namespace Assignment.Controllers
             {
                 var certificates = await _candidatesRepository.GetCertificateCountsByDateRangeAsync(id,StartD,EndD);
 
-                return Ok(certificates);
+                return Ok(certificates.Adapt<List<CertificateDTO>>());
             }
             catch (ArgumentNullException ex)
             {

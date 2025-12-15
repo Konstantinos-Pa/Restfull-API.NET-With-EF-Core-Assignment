@@ -1,11 +1,12 @@
 ﻿
 using Assignment.Models;
-using Microsoft.EntityFrameworkCore;
-using Assignment.Service; // εκεί που είναι το PostgresDbContext
-
+using Assignment.DTOs;
 using Assignment.Repository;
+using Assignment.Service; // εκεί που είναι το PostgresDbContext
+using Microsoft.EntityFrameworkCore;
+using Mapster;
 
-    public class CandidatesAnalyticsRepository: ICandidatesAnalyticsRepository
+public class CandidatesAnalyticsRepository: ICandidatesAnalyticsRepository
     {
         private readonly PostgresDbContext _context;
 
@@ -18,6 +19,7 @@ using Assignment.Repository;
         {
             return await _context.CandidatesAnalytics.ToListAsync();
         }
+
 
         public async Task<CandidatesAnalytics> GetCandidatesAnalyticsByIdAsync(int id)
         {
@@ -35,15 +37,24 @@ using Assignment.Repository;
             return analytics;
         }
 
-        public async Task AddCandidatesAnalyticsAsync(CandidatesAnalytics analytics)
+       public async Task<int> AddCandidatesAnalyticsAsync(CandidatesAnalytics analytics)
         {
             if (analytics == null)
             {
-                throw new ArgumentNullException(nameof(analytics));
+                throw new ArgumentNullException(nameof(analytics) + " Is Null (Thrown from AddCandidatesAnalyticsAsync)");
             }
-
+            if (analytics.CertificateId == 0)
+            {
+                throw new ArgumentNullException(nameof(analytics.CertificateId) + " Is Null (Thrown from AddCandidatesAnalyticsAsync)");
+            }
+            Certificate? certificate = await _context.Certificates.FirstOrDefaultAsync(c => c.Id == analytics.CertificateId);
+            if (certificate == null)
+            {
+                throw new ArgumentException("Didn't find any certificates specified");
+            }
             _context.CandidatesAnalytics.Add(analytics);
             await _context.SaveChangesAsync();
+            return analytics.Id;
         }
 
         public async Task UpdateCandidatesAnalyticsAsync(int id, CandidatesAnalytics analytics)
@@ -69,12 +80,13 @@ using Assignment.Repository;
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteCandidatesAnalyticsAsync(CandidatesAnalytics analytics)
+        public async Task DeleteCandidatesAnalyticsAsync(int id)
         {
-            if (analytics == null)
+            if (id <= 0)
             {
-                throw new ArgumentNullException(nameof(analytics), "Is Null.  (Thrown from UpdateCandidatesAnalyticsAsync)");
+                throw new ArgumentNullException(nameof(id) + " must be greater than zero. (Thrown from DeleteCandidatesAnalyticsAsync)");
             }
+            CandidatesAnalytics analytics = await GetCandidatesAnalyticsByIdAsync(id);
 
             _context.CandidatesAnalytics.Remove(analytics);
             await _context.SaveChangesAsync();

@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿
+using System.ComponentModel.DataAnnotations;
 
-namespace Assignment.Models
+namespace Assignment.DTOs
 {
     public enum PhoteId
     {
@@ -9,18 +9,19 @@ namespace Assignment.Models
         Passport,
         Driving_License
     }
-    public class PhotoId
+    public class PhotoIdDTO
     {
-        public int Id { get; set; }
-
+        [Required]
         public PhoteId PhotoIdImage { get; set; }
 
+        [Required]
         public int PhotoIdNumber { get; set; }
 
+        [Required]
         public DateOnly DateOfIssue { get; set; }
 
+        [Required]
         public int CandidateNumber { get; set; }
-        //Nagigational Property
-        public Candidate? Candidate { get; set; }
+
     }
 }

@@ -36,7 +36,7 @@ namespace Assignment.Repository
             return certificate;
         }
 
-        public async Task AddCertificateAsync(Certificate certificate)
+        public async Task<int> AddCertificateAsync(Certificate certificate)
         {
             if (certificate == null)
             {
@@ -45,6 +45,7 @@ namespace Assignment.Repository
 
             await _context.Certificates.AddAsync(certificate);
             await _context.SaveChangesAsync();
+            return certificate.Id;
         }
 
         public async Task UpdateCertificateAsync(int id, Certificate certificate)

@@ -15,6 +15,10 @@ namespace Assignment
             builder.Services.AddDbContext<PostgresDbContext>(option =>
             {
                 option.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+            }); 
+            builder.Services.AddSwaggerGen(options =>
+            {
+                options.CustomSchemaIds(type => type.FullName);
             });
 
             builder.Services.AddScoped<ICandidatesRepository, CandidatesRepository>();

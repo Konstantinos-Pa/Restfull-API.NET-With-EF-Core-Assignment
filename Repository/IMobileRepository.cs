@@ -1,4 +1,6 @@
-﻿using Assignment.Models;
+﻿using Assignment.DTOs;
+using Assignment.Models;
+
 namespace Assignment.Repository
 
 {
@@ -6,7 +8,7 @@ namespace Assignment.Repository
     {
         Task<List<Mobile>> GetMobilesAsync();
         Task<Mobile> GetMobileByIdAsync(int id);
-        Task AddMobileAsync(Mobile mobile);
+        Task<int> AddMobileAsync(Mobile mobile);
         Task UpdateMobileAsync(int id,Mobile mobile);
         Task DeleteMobileAsync(int id);
     }

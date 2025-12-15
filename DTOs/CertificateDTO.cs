@@ -1,13 +1,17 @@
-﻿namespace Assignment.Models
-{
-    public class Certificate
-    {
-        public int Id { get; set; }
+﻿using System.ComponentModel.DataAnnotations;
 
+namespace Assignment.DTOs
+{
+    public class CertificateDTO
+    {
+
+        [Required]
+        [MaxLength(50)]
         public string? Title { get; set; }
 
+        [Required]
         public string? AssessmentTestCode { get; set; }
-        
+
         public DateOnly ExaminationDate { get; set; }
         
         public DateOnly ScoreReportDate { get; set; }
@@ -19,11 +23,6 @@
         public int PercentageScore { get; set; }
 
         public bool AssessmentResultLabel { get; set; }
-
-        //navigational properties
-        public ICollection<Candidate>? Candidates { get; set; }
-
-        public ICollection<CandidatesAnalytics>? CandidatesAnalytics { get; set; }
        
         
     }

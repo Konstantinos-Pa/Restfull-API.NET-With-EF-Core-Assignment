@@ -11,39 +11,24 @@ namespace Assignment.Models
 
     public class Candidate
     {
-        [Key]
         public int CandidateNumber { get; set; }
 
-        [Required]
-        [MinLength(5)]
-        [MaxLength(20)]
         public string? FirstName { get; set; }
 
-        [MinLength(5)]
-        [MaxLength(20)]
         public string MiddleName { get; set; } = string.Empty;
 
-        [Required]
-        [MinLength(5)]
-        [MaxLength(20)]
         public string? LastName { get; set; }
 
-        [Required]
         public Gender Gender { get; set; }
 
-        [Required]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
         public DateOnly DateOfBirth { get; set; }
 
-        [Required]
-        [EmailAddress]
         public string? Email { get; set; }
 
-        [Required]
         public string? NativeLanguage { get; set; }
 
 
-
+        //Navigational Property
         public ICollection<Address>? Addresses { get; set; }
 
         public ICollection<Mobile>? Mobiles { get; set; }

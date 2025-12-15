@@ -6,9 +6,9 @@ namespace Assignment.Repository
     {
         Task<List<CandidatesAnalytics>> GetCandidatesAnalyticsAsync();
         Task<CandidatesAnalytics> GetCandidatesAnalyticsByIdAsync(int id);
-        Task AddCandidatesAnalyticsAsync(CandidatesAnalytics analytics);
+        Task<int> AddCandidatesAnalyticsAsync(CandidatesAnalytics analytics);
         Task UpdateCandidatesAnalyticsAsync(int id, CandidatesAnalytics analytics);
-        Task DeleteCandidatesAnalyticsAsync(CandidatesAnalytics analytics);
+        Task DeleteCandidatesAnalyticsAsync(int id);
     }
 }
 

@@ -1,6 +1,9 @@
-﻿using Assignment.Models;
+﻿using Assignment.DTOs;
+using Assignment.Models;
 using Assignment.Repository;
+using Mapster;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace Assignment.Controllers
 {
@@ -25,7 +28,7 @@ namespace Assignment.Controllers
             try
             {
                 var addresses = await _addressRepository.GetAddressesAsync();
-                return Ok(addresses);
+                return Ok(addresses.Adapt<List<AddressDTO>>());
             }
             catch (Exception ex)
             {
@@ -42,9 +45,13 @@ namespace Assignment.Controllers
             try
             {
                 var address = await _addressRepository.GetAddressByIdAsync(id);
-                return Ok(address);
+                return Ok(address.Adapt<AddressDTO>());
             }
             catch (ArgumentNullException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (ArgumentException ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -58,14 +65,21 @@ namespace Assignment.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPost]
-        public async Task<IActionResult> AddAddress([FromBody] Address address)
+        public async Task<IActionResult> AddAddress([FromBody] AddressDTO addressDTO)
         {
             try
             {
+                var address = addressDTO.Adapt<Address>();
                 if (ModelState.IsValid)
                 {
-                    await _addressRepository.AddAddressAsync(address);
-                    return CreatedAtAction(nameof(GetAddressById), new { id = address.Id }, address);
+                    int Id = await _addressRepository.AddAddressAsync(address);
+                    var resultDto = address.Adapt<AddressDTO>();
+
+                    return CreatedAtAction(
+                        nameof(GetAddressById),
+                        new { Id },
+                        resultDto
+                    );
                 }
                 else
                 {
@@ -86,10 +100,11 @@ namespace Assignment.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> UpdateAddress([FromRoute] int id, [FromBody] Address address)
+        public async Task<IActionResult> UpdateAddress([FromRoute] int id, [FromBody] AddressDTO addressDTO)
         {
             try
             {
+                var address = addressDTO.Adapt<Address>();
                 if (ModelState.IsValid)
                 {
                     await _addressRepository.UpdateAddressAsync(id, address);

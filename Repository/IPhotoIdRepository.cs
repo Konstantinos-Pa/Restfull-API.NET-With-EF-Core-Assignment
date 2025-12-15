@@ -1,4 +1,5 @@
-﻿using Assignment.Models;
+﻿using Assignment.DTOs;
+using Assignment.Models;
 
 namespace Assignment.Repository
 {
@@ -6,7 +7,7 @@ namespace Assignment.Repository
     {
         Task<List<PhotoId>> GetPhotoIdsAsync();
         Task<PhotoId> GetPhotoIdByIdAsync(int id);
-        Task AddPhotoIdAsync(PhotoId photoId);
+        Task<int> AddPhotoIdAsync(PhotoId photoId);
         Task UpdatePhotoIdAsync(int id,PhotoId photoId);
         Task DeletePhotoIdAsync(int id);
     }

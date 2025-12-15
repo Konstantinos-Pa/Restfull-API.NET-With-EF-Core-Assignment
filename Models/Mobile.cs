@@ -7,16 +7,12 @@ namespace Assignment.Models
     {
         public int Id { get; set; }
 
-        [Required]
-        [MaxLength(10)]
         public int MobileNumber { get; set; }
 
         public string? MobileType { get; set; }
 
-        // Foreign key to Candidate
-
-        [ForeignKey(nameof(CandidateNumber))]
         public int CandidateNumber { get; set; }
+        //Nagigational properties
         public Candidate? Candidate { get; set; }    
     }
 }

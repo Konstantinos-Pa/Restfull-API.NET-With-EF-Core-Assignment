@@ -1,4 +1,6 @@
 ﻿using Assignment.Models;
+using Assignment.DTOs;
+
 namespace Assignment.Repository
 {
 
@@ -8,7 +10,7 @@ namespace Assignment.Repository
         Task DeleteCertificateAsync(int id);
         Task<Certificate> GetCertificateByIdAsync(int id);
         Task UpdateCertificateAsync(int id, Certificate certificate);
-        Task AddCertificateAsync(Certificate certificate);
+        Task<int> AddCertificateAsync(Certificate certificate);
 
 
 

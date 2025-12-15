@@ -1,4 +1,5 @@
-﻿using Assignment.Models;
+﻿using Assignment.DTOs;
+using Assignment.Models;
 using Assignment.Service;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
@@ -32,14 +33,24 @@ namespace Assignment.Repository
             }
             return mobile;
         }
-        public async Task AddMobileAsync(Mobile mobile)
+        public async Task<int> AddMobileAsync(Mobile mobile)
         {
             if (mobile == null)
             {
-                throw new ArgumentNullException(nameof(mobile));
+                throw new ArgumentNullException(nameof(mobile) + " Is Null (Thrown from AddMobileAsync)");
+            }
+            if (mobile.CandidateNumber == 0)
+            {
+                throw new ArgumentNullException(nameof(mobile.CandidateNumber) + " Is Null (Thrown from AddMobileAsync)");
+            }
+            Candidate? candidate = await _context.Candidates.FirstOrDefaultAsync(c => c.CandidateNumber == mobile.CandidateNumber);
+            if (candidate == null)
+            {
+                throw new ArgumentException("Didn't find any candidates specified");
             }
             await _context.Mobiles.AddAsync(mobile);
             await _context.SaveChangesAsync();
+            return mobile.Id;
         }
 
         public async Task UpdateMobileAsync(int id, Mobile mobile)

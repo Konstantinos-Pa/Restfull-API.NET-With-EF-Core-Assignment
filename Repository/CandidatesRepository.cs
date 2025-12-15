@@ -1,6 +1,7 @@
 ﻿using Assignment.Models;
 using Assignment.Service;
 using Microsoft.EntityFrameworkCore;
+using NuGet.ContentModel;
 using System.Globalization;
 
 namespace Assignment.Repository
@@ -32,7 +33,7 @@ namespace Assignment.Repository
             return candidate;
         }
 
-        public async Task AddCandidateAsync(Candidate candidate)
+        public async Task<int> AddCandidateAsync(Candidate candidate)
         {
             if (candidate == null)
             {
@@ -40,7 +41,7 @@ namespace Assignment.Repository
             }
             _context.Candidates.Add(candidate);
             await _context.SaveChangesAsync();
-
+            return candidate.CandidateNumber;
         }
 
         public async Task UpdateCandidateAsync(int id, Candidate candidate)
@@ -90,7 +91,7 @@ namespace Assignment.Repository
                 .SelectMany(c => c.Certificates ?? Enumerable.Empty<Certificate>())
                 .ToListAsync();
 
-            if (certificates == null! || certificates.Any())
+            if (certificates == null! || !certificates.Any())
     {
                 throw new KeyNotFoundException("No certificates found for the candidate (Thrown from MarksPerTopicPerCertificateAsync)");
             }
@@ -181,8 +182,9 @@ namespace Assignment.Repository
 
         public async Task<List<int>> GetCertificateCountsByDateRangeAsync(int candidateId, string Start, string End)
         {
-            List<Certificate> certificates; 
-            List<int> result = new List<int>();
+            List<Certificate> certificates;
+            int passed = 0, failed = 0;
+            var result = new List<int> { 0, 0 };
             if (candidateId <= 0)
             {
                 throw new ArgumentNullException(nameof(candidateId), " must be greater than zero. (Thrown from GetCertificateCountsByDateRangeAsync)");
@@ -218,15 +220,15 @@ namespace Assignment.Repository
                 {
                     if (cert.AssessmentResultLabel == true)
                     {
-                        result[0] += 1;
+                        passed += 1;
                     }
                     else
                     {
-                        result[1] += 1;
+                        failed += 1;
                     }
                 }
             }
-            return result;
+            return new List<int> { passed, failed };
         }
     }
 }

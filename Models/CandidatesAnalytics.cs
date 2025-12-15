@@ -12,9 +12,8 @@ namespace Assignment.Models
 
         public int PossibleMarks { get; set; }
 
-        // Foreign Key for Certificate
-
         public int CertificateId { get; set; }  
+        //navigational property
         public Certificate? Certificate { get; set; }
 
 

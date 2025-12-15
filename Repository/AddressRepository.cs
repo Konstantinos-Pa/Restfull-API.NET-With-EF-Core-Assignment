@@ -1,6 +1,8 @@
 ﻿using Assignment.Models;
+using Assignment.DTOs;
 using Assignment.Service;
 using Microsoft.EntityFrameworkCore;
+using Mapster;
 
 namespace Assignment.Repository
 {
@@ -31,14 +33,24 @@ namespace Assignment.Repository
             return address;
         }
 
-        public async Task AddAddressAsync(Address address)
+        public async Task<int> AddAddressAsync(Address address)
         {
             if (address == null)
             {
-                throw new ArgumentNullException(nameof(address) + "Is Null (Thrown from AddAddressAsync)");
+                throw new ArgumentNullException(nameof(address) + " Is Null (Thrown from AddAddressAsync)");
+            }
+            if (address.CandidateNumber == 0)
+            {
+                throw new ArgumentNullException(nameof(address.CandidateNumber) + " Is Null (Thrown from AddAddressAsync)");
+            }
+            Candidate? candidate = await _context.Candidates.FirstOrDefaultAsync(c=>c.CandidateNumber==address.CandidateNumber);
+            if (candidate == null)
+            {
+                throw new ArgumentException("Didn't find any candidates specified");
             }
             await _context.Addresses.AddAsync(address);
             await _context.SaveChangesAsync();
+            return address.Id;
         }
 
         public async Task UpdateAddressAsync(int id, Address address)

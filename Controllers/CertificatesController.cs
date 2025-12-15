@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Assignment.DTOs;
 using Assignment.Models;
 using Assignment.Repository;
+using Mapster;
+using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace Assignment.Controllers
 {
@@ -24,7 +27,7 @@ namespace Assignment.Controllers
             try
             {
                 var certificates = await _context.GetCertificatesAsync();
-                return Ok(certificates);
+                return Ok(certificates.Adapt<List<CertificateDTO>>());
             }
             catch (Exception ex)
             {
@@ -41,7 +44,7 @@ namespace Assignment.Controllers
             try
             {
                 var certificate = await _context.GetCertificateByIdAsync(id);
-                return Ok(certificate);
+                return Ok(certificate.Adapt<CertificateDTO>());
             }
             catch (ArgumentNullException ex)
             {
@@ -57,10 +60,11 @@ namespace Assignment.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> PutCertificate([FromRoute]int certificateId, [FromBody] Certificate certificate)
+        public async Task<IActionResult> PutCertificate([FromRoute]int certificateId, [FromBody] CertificateDTO certificateDTO)
         {
             try
             {
+                var certificate = certificateDTO.Adapt<Certificate>();
                 if (!ModelState.IsValid)
                 {
                     return BadRequest(ModelState);
@@ -83,23 +87,22 @@ namespace Assignment.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> PostCertificate([FromBody] Certificate certificate)
+        public async Task<IActionResult> PostCertificate([FromBody] CertificateDTO certificateDTO)
         {
-            try
-            {
+                var certificate = certificateDTO.Adapt<Certificate>();
                 if (!ModelState.IsValid)
                 {
                     return BadRequest(ModelState);
                 }
 
-                await _context.AddCertificateAsync(certificate);
+                int Id = await _context.AddCertificateAsync(certificate);
+                var resultDto = certificate.Adapt<CertificateDTO>();
 
-                return CreatedAtAction(nameof(GetCertifiicate), new { id = certificate.Id }, certificate);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+                return CreatedAtAction(
+                    nameof(GetCertificateById),
+                    new { Id },
+                    resultDto
+                );
         }
 
 

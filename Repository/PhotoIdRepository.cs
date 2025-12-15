@@ -1,6 +1,7 @@
 ﻿using Assignment.Models;
 using Assignment.Service;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 namespace Assignment.Repository
 {
@@ -31,14 +32,24 @@ namespace Assignment.Repository
             return photoId;
         }
 
-        public async Task AddPhotoIdAsync(PhotoId photoId)
+        public async Task<int> AddPhotoIdAsync(PhotoId photoId)
         {
             if (photoId == null)
             {
-                throw new ArgumentNullException(nameof(photoId) + "Is Null (Thrown from AddPhotoIdAsync)");
+                throw new ArgumentNullException(nameof(photoId) + " Is Null (Thrown from AddPhotoIdAsync)");
+            }
+            if (photoId.CandidateNumber == 0)
+            {
+                throw new ArgumentNullException(nameof(photoId.CandidateNumber) + " Is Null (Thrown from AddPhotoIdAsync)");
+            }
+            Candidate? candidate = await _context.Candidates.FirstOrDefaultAsync(c => c.CandidateNumber == photoId.CandidateNumber);
+            if (candidate == null)
+            {
+                throw new ArgumentException("Didn't find any candidates specified");
             }
             await _context.photoIds.AddAsync(photoId);
             await _context.SaveChangesAsync();
+            return photoId.Id;
         }
 
         public async Task UpdatePhotoIdAsync(int id, PhotoId photoId)

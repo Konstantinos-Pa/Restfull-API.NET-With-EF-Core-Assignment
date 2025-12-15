@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Assignment.Models;
+using Assignment.DTOs;
 using Assignment.Repository;
+using Mapster;
 
 namespace Assignment.Controllers
 {
@@ -26,7 +28,7 @@ namespace Assignment.Controllers
             try
             {
                 var mobiles = await _mobileRepository.GetMobilesAsync();
-                return Ok(mobiles);
+                return Ok(mobiles.Adapt<List<MobileDTO>>());
             }
             catch (Exception ex)
             {
@@ -41,12 +43,12 @@ namespace Assignment.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetMobile([FromRoute] int id)
+        public async Task<IActionResult> GetMobileId([FromRoute] int id)
         {
             try
             {
                 var mobile = await _mobileRepository.GetMobileByIdAsync(id);
-                return Ok(mobile);
+                return Ok(mobile.Adapt<MobileDTO>());
             }
             catch (ArgumentNullException ex)
             {
@@ -65,18 +67,33 @@ namespace Assignment.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> PostMobile([FromBody] Mobile mobile)
+        public async Task<IActionResult> PostMobile([FromBody] MobileDTO mobileDTO)
         {
             try
             {
+                var mobile = mobileDTO.Adapt<Mobile>();
                 if (!ModelState.IsValid)
                 {
                     return BadRequest(ModelState);
                 }
 
-                await _mobileRepository.AddMobileAsync(mobile);
-                return CreatedAtAction(nameof(GetMobile), new { id = mobile.Id }, mobile);
+                int Id = await _mobileRepository.AddMobileAsync(mobile);
+                var resultDto = mobile.Adapt<MobileDTO>();
 
+                return CreatedAtAction(
+                    nameof(GetMobileId),
+                    new { Id },
+                    resultDto
+                );
+
+            }
+            catch (ArgumentNullException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {
@@ -91,10 +108,11 @@ namespace Assignment.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdateMobile([FromRoute] int id, [FromBody] Mobile mobile)
+        public async Task<IActionResult> UpdateMobile([FromRoute] int id, [FromBody] MobileDTO mobileDTO)
         {
             try
             {
+                var mobile = mobileDTO.Adapt<Mobile>();
                 if (!ModelState.IsValid)
                 {
                     return BadRequest(ModelState);
