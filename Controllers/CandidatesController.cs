@@ -240,12 +240,12 @@ namespace Assignment.Controllers
             }
         }
 
-        [HttpGet("/CertificatesCountByDateRange/{id:int}")]
+        [HttpGet("/CertificatesCountByDateRange/{id:int}/{StartD:alpha}/{EndD:alpha}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetCertificateCountsByDateRange([FromRoute] int id, [FromBody] string StartD, [FromBody] string EndD)
+        public async Task<IActionResult> GetCertificateCountsByDateRange([FromRoute] int id, [FromRoute] string StartD, [FromRoute] string EndD)
         {
             try
             {

@@ -126,8 +126,6 @@ namespace Assignment.Controllers
         }
 
         
-        }
-
-
     }
+
 }
