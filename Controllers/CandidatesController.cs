@@ -142,16 +142,16 @@ namespace Assignment.Controllers
             }
         }
 
-        [HttpGet("/MarksPerCertificatesOfCandidate/{id:int}")]
+        [HttpGet("MarksPerCertificatesOfCandidate/{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetMarksPerTopicPerCertificateByCandidate([FromRoute] int candidateNumber)
+        public async Task<IActionResult> GetMarksPerTopicPerCertificateByCandidate([FromRoute] int id)
         {
             try
             {
-                var certificates = await _candidatesRepository.MarksPerTopicPerCertificateAsync(candidateNumber);
+                var certificates = await _candidatesRepository.MarksPerTopicPerCertificateAsync(id);
 
                 return Ok(certificates.Adapt<List<CertificateDTO>>());
             }
@@ -170,16 +170,16 @@ namespace Assignment.Controllers
 
         }
 
-        [HttpGet("/CertificatesOfCandidate/{id:int}")]
+        [HttpGet("CertificatesOfCandidate/{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetObtainedCertificatesByCandidate([FromRoute] int candidateNumber)
+        public async Task<IActionResult> GetObtainedCertificatesByCandidate([FromRoute] int id)
         {
             try
             {
-                var certificates = await _candidatesRepository.ObtainedCertificatesOfCandidate(candidateNumber);
+                var certificates = await _candidatesRepository.ObtainedCertificatesOfCandidate(id);
 
                 return Ok(certificates.Adapt<List<CertificateDTO>>());
             }
@@ -198,7 +198,7 @@ namespace Assignment.Controllers
 
         }
 
-        [HttpGet("/NotCertificatesOfCandidate/{id:int}")]
+        [HttpGet("NotCertificatesOfCandidate/{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -225,7 +225,7 @@ namespace Assignment.Controllers
             }
         }
 
-        [HttpGet("/CertificatesByDate/{id:int}")]
+        [HttpGet("CertificatesByDate/{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -252,7 +252,7 @@ namespace Assignment.Controllers
             }
         }
 
-        [HttpGet("/CertificatesCountByDateRange/{id:int}/{StartD:alpha}/{EndD:alpha}")]
+        [HttpGet("CertificatesCountByDateRange/{id:int}/{StartD:alpha}/{EndD:alpha}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

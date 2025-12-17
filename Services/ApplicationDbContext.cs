@@ -24,6 +24,7 @@ namespace Assignment.Service
         public DbSet<Mobile> Mobiles { get; set; }
         public DbSet<PhotoId> photoIds { get; set; }
 
+
             protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AppUser>(entity =>

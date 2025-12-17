@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Project.Repository;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -28,21 +29,12 @@ namespace Assignment
             {
                 options.AddDefaultPolicy(policy =>
                 {
-                    policy.WithOrigins("http://localhost:5173") // Frontend URL
+                    policy.WithOrigins("http://localhost:5174","http://localhost:5173") // Frontend URL
                           .AllowAnyMethod()  // GET, POST, etc.
                           .AllowAnyHeader(); // Custom headers
                 });
             });
 
-            TypeAdapterConfig<Candidate, CandidateDTO>.NewConfig()
-            .Map(dest => dest.Certificates, src => src.Certificates != null
-                ? src.Certificates.Select(c => c.Id).ToList()
-                : new List<int>());
-
-            TypeAdapterConfig<Certificate, CertificateDTO>.NewConfig()
-            .Map(dest => dest.Candidates, src => src.Candidates != null
-                ? src.Candidates.Select(c => c.CandidateNumber).ToList()
-                : new List<int>());
 
             builder.Services.AddScoped<ICandidatesRepository, CandidatesRepository>();
             builder.Services.AddScoped<IAddressRepository, AddressRepository>();
@@ -50,6 +42,7 @@ namespace Assignment
             builder.Services.AddScoped<IMobileRepository, MobileRepository>();
             builder.Services.AddScoped<IPhotoIdRepository, PhotoIdRepository>();
             builder.Services.AddScoped<ICandidatesAnalyticsRepository, CandidatesAnalyticsRepository>();
+            builder.Services.AddScoped<ICandidatesCertificates, CandidatesCertificates>();
 
             builder.Services.AddControllers()
              .AddJsonOptions(options =>

@@ -39,6 +39,5 @@ namespace Assignment.DTOs
         [MaxLength(50)]
         public string? NativeLanguage { get; set; }
 
-        public List<int>? Certificates { get; set; } = new List<int>();
     }
 }

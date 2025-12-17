@@ -25,6 +25,5 @@ namespace Assignment.DTOs
 
         public bool AssessmentResultLabel { get; set; }
        
-        public List<string>? Candidates { get; set; } = new List<string>();
     }
 }
