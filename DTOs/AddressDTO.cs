@@ -5,6 +5,7 @@ namespace Assignment.DTOs
 {
     public class AddressDTO
     {
+        public int Id { get; set; }
 
         [Required]
         public string? City { get; set; }

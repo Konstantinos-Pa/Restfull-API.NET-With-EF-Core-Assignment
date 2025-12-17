@@ -11,6 +11,8 @@ namespace Assignment.DTOs
     }
     public class PhotoIdDTO
     {
+        public int Id { get; set; }
+
         [Required]
         public PhoteId PhotoIdImage { get; set; }
 

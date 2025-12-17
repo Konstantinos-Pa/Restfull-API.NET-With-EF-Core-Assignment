@@ -4,6 +4,7 @@ namespace Assignment.DTOs
 {
     public class CertificateDTO
     {
+        public int Id { get; set; }
 
         [Required]
         [MaxLength(50)]

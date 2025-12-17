@@ -5,6 +5,8 @@ namespace Assignment.DTOs
 {
     public class MobileDTO
     {
+        public int Id { get; set; }
+
         [Required]
         public int MobileNumber { get; set; }
 

@@ -6,6 +6,8 @@ namespace Assignment.DTOs
 {
     public class CandidatesAnalyticsDTO
     {
+        public int Id { get; set; }
+
         public string? TopicDescription { get; set; }
 
         public int AwardedMarks { get; set; }

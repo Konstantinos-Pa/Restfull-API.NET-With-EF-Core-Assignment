@@ -11,6 +11,8 @@ namespace Assignment.DTOs
 
     public class CandidateDTO
     {
+        public int CandidateNumber { get; set; }
+
         [Required]
         [MaxLength(20)]
         public string? FirstName { get; set; }
