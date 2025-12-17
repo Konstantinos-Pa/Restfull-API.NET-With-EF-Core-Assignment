@@ -1,25 +1,28 @@
-
-using Assignment.Service;
-using Microsoft.EntityFrameworkCore;
+using Assignment.DTOs;
+using Assignment.Models;
 using Assignment.Repository;
+using Assignment.Service;
+using AuthenticationDemo.Authentication;
+using Mapster;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using System.Text.Json.Serialization;
 
 namespace Assignment
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.Services.AddDbContext<PostgresDbContext>(option =>
-            {
-                option.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
-            }); 
-            builder.Services.AddSwaggerGen(options =>
-            {
-                options.CustomSchemaIds(type => type.FullName);
-            });
+             builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
+                options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")
+             ));
 
             builder.Services.AddCors(options =>
             {
@@ -31,7 +34,15 @@ namespace Assignment
                 });
             });
 
+            TypeAdapterConfig<Candidate, CandidateDTO>.NewConfig()
+            .Map(dest => dest.Certificates, src => src.Certificates != null
+                ? src.Certificates.Select(c => c.Id).ToList()
+                : new List<int>());
 
+            TypeAdapterConfig<Certificate, CertificateDTO>.NewConfig()
+            .Map(dest => dest.Candidates, src => src.Candidates != null
+                ? src.Candidates.Select(c => c.CandidateNumber).ToList()
+                : new List<int>());
 
             builder.Services.AddScoped<ICandidatesRepository, CandidatesRepository>();
             builder.Services.AddScoped<IAddressRepository, AddressRepository>();
@@ -40,10 +51,61 @@ namespace Assignment
             builder.Services.AddScoped<IPhotoIdRepository, PhotoIdRepository>();
             builder.Services.AddScoped<ICandidatesAnalyticsRepository, CandidatesAnalyticsRepository>();
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers()
+             .AddJsonOptions(options =>
+             {
+                 options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+             });
+
+            builder.Services.AddIdentityCore<AppUser>()
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
+
+
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                var secret = builder.Configuration["JwtConfig:Secret"];
+                var issuer = builder.Configuration["JwtConfig:ValidIssuer"];
+                var audience = builder.Configuration["JwtConfig:ValidAudiences"];
+
+                if (secret is null || issuer is null || audience is null)
+                {
+                    throw new ApplicationException("Jwt is not set in the configuration");
+                }
+                options.SaveToken = true;
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidAudience = audience,
+                    ValidIssuer = issuer,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret))
+                };
+
+            });
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+
+            builder.Services.AddSwaggerGen(options =>
+            {
+                options.CustomSchemaIds(type => type.FullName);
+            });
+
+            builder.Services.AddAuthorization( options =>
+            {
+                    options.AddPolicy("RequireAdministratorRole", policy =>
+                    policy.RequireRole(AppRoles.Administrator));
+                    options.AddPolicy("RequireUserRole", policy =>
+                    policy.RequireRole(AppRoles.User));
+            });
+
 
             var app = builder.Build();
 
@@ -58,7 +120,27 @@ namespace Assignment
 
             app.UseCors();
 
+            app.UseAuthentication();
+
             app.UseAuthorization();
+
+            using (var serviceScope = app.Services.CreateScope())
+            {
+                var services = serviceScope.ServiceProvider;
+                // Ensure database is created and apply migrations
+                var dbContext = services.GetRequiredService<ApplicationDbContext>();
+
+                dbContext.Database.EnsureCreated();
+                var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+                if (!await roleManager.RoleExistsAsync(AppRoles.User))
+                {
+                    await roleManager.CreateAsync(new IdentityRole(AppRoles.User));
+                }
+                if (!await roleManager.RoleExistsAsync(AppRoles.Administrator))
+                {
+                    await roleManager.CreateAsync(new IdentityRole(AppRoles.Administrator));
+                }
+            }
 
             app.MapControllers();
 

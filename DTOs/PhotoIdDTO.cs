@@ -21,7 +21,7 @@ namespace Assignment.DTOs
         public DateOnly DateOfIssue { get; set; }
 
         [Required]
-        public int CandidateNumber { get; set; }
+        public string? CandidateId { get; set; }
 
     }
 }

@@ -1,4 +1,5 @@
-﻿using Assignment.DTOs;
+﻿
+using Assignment.DTOs;
 using Assignment.Models;
 using Assignment.Service;
 using Microsoft.EntityFrameworkCore;
@@ -6,11 +7,11 @@ using System.Net;
 
 namespace Assignment.Repository
 {
-    public class MobileRepository:IMobileRepository
+    public class MobileRepository : IMobileRepository
     {
-        private readonly PostgresDbContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public MobileRepository(PostgresDbContext context)
+        public MobileRepository(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -55,7 +56,7 @@ namespace Assignment.Repository
 
         public async Task UpdateMobileAsync(int id, Mobile mobile)
         {
-            if (id <=0)
+            if (id <= 0)
             {
                 throw new ArgumentNullException(nameof(id) + " must be greater than zero. (Thrown from UpdateMobileAsync)");
             }
@@ -68,7 +69,7 @@ namespace Assignment.Repository
             existingMobile.MobileNumber = mobile.MobileNumber;
             existingMobile.MobileType = mobile.MobileType;
             existingMobile.CandidateNumber = mobile.CandidateNumber;
-            
+
             await _context.SaveChangesAsync();
         }
 
@@ -78,7 +79,7 @@ namespace Assignment.Repository
             {
                 throw new ArgumentNullException(nameof(id) + " must be greater than zero. (Thrown from DeleteMobileAsync)");
             }
-            var mobile =  await GetMobileByIdAsync(id);
+            var mobile = await GetMobileByIdAsync(id);
             _context.Mobiles.Remove(mobile);
             await _context.SaveChangesAsync();
         }

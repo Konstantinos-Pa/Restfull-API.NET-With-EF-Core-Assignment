@@ -1,15 +1,17 @@
-﻿using Assignment.Models;
-using Assignment.DTOs;
+﻿using Assignment.DTOs;
+using Assignment.Models;
 using Assignment.Repository;
+using Mapster;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Mapster;
 
 namespace Assignment.Controllers
 {
 
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = $"{AppRoles.User}")]
     public class CandidatesController : ControllerBase
     {
         private readonly ICandidatesRepository _candidatesRepository;
@@ -187,7 +189,7 @@ namespace Assignment.Controllers
             }
             catch (KeyNotFoundException ex)
             {
-                return NotFound(ex.Message); 
+                return NotFound(ex.Message);
             }
             catch (Exception ex)
             {
@@ -259,7 +261,7 @@ namespace Assignment.Controllers
         {
             try
             {
-                var certificates = await _candidatesRepository.GetCertificateCountsByDateRangeAsync(id,StartD,EndD);
+                var certificates = await _candidatesRepository.GetCertificateCountsByDateRangeAsync(id, StartD, EndD);
 
                 return Ok(certificates.Adapt<List<CertificateDTO>>());
             }

@@ -1,4 +1,5 @@
-﻿using Assignment.Models;
+﻿
+using Assignment.Models;
 using Assignment.Service;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,9 +7,9 @@ namespace Assignment.Repository
 {
     public class CertificatesRepository : ICertificateRepository
     {
-        private readonly PostgresDbContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public CertificatesRepository(PostgresDbContext context)
+        public CertificatesRepository(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -88,7 +89,7 @@ namespace Assignment.Repository
             await _context.SaveChangesAsync();
         }
 
-       
+
 
 
     }

@@ -11,6 +11,6 @@ namespace Assignment.DTOs
         public string? MobileType { get; set; }
 
         [Required]
-        public int CandidateNumber { get; set; }
+        public string? CandidateId { get; set; }
     }
 }

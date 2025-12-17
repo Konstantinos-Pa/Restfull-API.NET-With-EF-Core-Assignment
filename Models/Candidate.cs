@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using AuthenticationDemo.Authentication;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Assignment.Models
@@ -35,9 +36,11 @@ namespace Assignment.Models
 
         public PhotoId? PhotoId { get; set; }
 
+        public AppUser? AppUser { get; set; }
+
         public ICollection<Certificate>? Certificates { get; set; }
 
-      
+
 
     }
 }

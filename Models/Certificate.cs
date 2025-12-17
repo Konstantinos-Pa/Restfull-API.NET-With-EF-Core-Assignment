@@ -1,4 +1,5 @@
-﻿namespace Assignment.Models
+﻿
+namespace Assignment.Models
 {
     public class Certificate
     {
@@ -7,9 +8,9 @@
         public string? Title { get; set; }
 
         public string? AssessmentTestCode { get; set; }
-        
+
         public DateOnly ExaminationDate { get; set; }
-        
+
         public DateOnly ScoreReportDate { get; set; }
 
         public int CandidateScore { get; set; }
@@ -24,7 +25,7 @@
         public ICollection<Candidate>? Candidates { get; set; }
 
         public ICollection<CandidatesAnalytics>? CandidatesAnalytics { get; set; }
-       
-        
+
+
     }
 }

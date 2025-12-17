@@ -2,6 +2,7 @@
 using Assignment.Models;
 using Assignment.Repository;
 using Mapster;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 
@@ -10,6 +11,7 @@ namespace Assignment.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = $"{AppRoles.User}")]
     public class AddressController : ControllerBase
     {
 

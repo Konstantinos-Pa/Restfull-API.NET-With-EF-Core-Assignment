@@ -8,8 +8,8 @@ namespace Assignment.Repository
 {
     public class CandidatesRepository : ICandidatesRepository
     {
-        private readonly PostgresDbContext _context;
-        public CandidatesRepository(PostgresDbContext context)
+        private readonly ApplicationDbContext _context;
+        public CandidatesRepository(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -92,7 +92,7 @@ namespace Assignment.Repository
                 .ToListAsync();
 
             if (certificates == null! || !certificates.Any())
-    {
+            {
                 throw new KeyNotFoundException("No certificates found for the candidate (Thrown from MarksPerTopicPerCertificateAsync)");
             }
 
@@ -106,7 +106,7 @@ namespace Assignment.Repository
             }).ToList();
 
             if (marksPerTopicWithTitle == null! || marksPerTopicWithTitle.Any())
-    {
+            {
                 throw new KeyNotFoundException("No analytics found for the candidate's certificates (Thrown from MarksPerTopicPerCertificateAsync)");
             }
 
@@ -117,7 +117,7 @@ namespace Assignment.Repository
         {
             if (id <= 0)
             {
-                throw new ArgumentNullException(nameof(id)," must be greater than zero.");
+                throw new ArgumentNullException(nameof(id), " must be greater than zero.");
             }
 
             var candidates = await _context.Candidates
@@ -151,7 +151,7 @@ namespace Assignment.Repository
             var obtainedIds = new HashSet<int>(obtainedCertificates.Select(c => c.Id));
 
             var notObtainedCertificates = allCertificates
-                .Where(c =>!(obtainedIds.Contains(c.Id)))
+                .Where(c => !(obtainedIds.Contains(c.Id)))
                 .ToList() ?? new List<Certificate>();
 
             return notObtainedCertificates;
@@ -189,7 +189,7 @@ namespace Assignment.Repository
             {
                 throw new ArgumentNullException(nameof(candidateId), " must be greater than zero. (Thrown from GetCertificateCountsByDateRangeAsync)");
             }
-            if (Start == "" || Start== null)
+            if (Start == "" || Start == null)
             {
                 throw new ArgumentNullException(nameof(Start), " must be greater than zero. (Thrown from GetCertificateCountsByDateRangeAsync)");
             }
@@ -198,7 +198,7 @@ namespace Assignment.Repository
                 throw new ArgumentNullException(nameof(End), " must be greater than zero. (Thrown from GetCertificateCountsByDateRangeAsync)");
             }
 
-            if (DateOnly.TryParseExact(Start,"dd/MM/yyyy",CultureInfo.InvariantCulture,DateTimeStyles.None,out DateOnly dateS))
+            if (DateOnly.TryParseExact(Start, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateOnly dateS))
             {
                 if (DateOnly.TryParseExact(End, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateOnly dateE))
                 {
@@ -212,7 +212,7 @@ namespace Assignment.Repository
             }
             else
             {
-                throw new ArgumentException(Start+ " can't be parsed to dd/MM/yyyy format.");
+                throw new ArgumentException(Start + " can't be parsed to dd/MM/yyyy format.");
             }
             if (certificates != null)
             {

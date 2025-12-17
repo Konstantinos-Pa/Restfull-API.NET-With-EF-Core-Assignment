@@ -1,14 +1,15 @@
-﻿using Assignment.Models;
+﻿
+using Assignment.Models;
 using Assignment.Service;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 
 namespace Assignment.Repository
 {
-    public class PhotoIdRepository:IPhotoIdRepository
+    public class PhotoIdRepository : IPhotoIdRepository
     {
-        private readonly PostgresDbContext _context;
-        public PhotoIdRepository(PostgresDbContext context)
+        private readonly ApplicationDbContext _context;
+        public PhotoIdRepository(ApplicationDbContext context)
         {
             _context = context;
         }

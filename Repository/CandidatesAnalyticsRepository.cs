@@ -8,9 +8,9 @@ using Mapster;
 
 public class CandidatesAnalyticsRepository: ICandidatesAnalyticsRepository
     {
-        private readonly PostgresDbContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public CandidatesAnalyticsRepository(PostgresDbContext context)
+        public CandidatesAnalyticsRepository(ApplicationDbContext context)
         {
           _context = context;
         }

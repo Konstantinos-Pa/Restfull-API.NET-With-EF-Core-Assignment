@@ -8,8 +8,8 @@ namespace Assignment.Repository
 {
     public class AddressRepository : IAddressRepository
     {
-        private readonly PostgresDbContext _context;
-        public AddressRepository(PostgresDbContext context)
+        private readonly ApplicationDbContext _context;
+        public AddressRepository(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -43,7 +43,7 @@ namespace Assignment.Repository
             {
                 throw new ArgumentNullException(nameof(address.CandidateNumber) + " Is Null (Thrown from AddAddressAsync)");
             }
-            Candidate? candidate = await _context.Candidates.FirstOrDefaultAsync(c=>c.CandidateNumber==address.CandidateNumber);
+            Candidate? candidate = await _context.Candidates.FirstOrDefaultAsync(c => c.CandidateNumber == address.CandidateNumber);
             if (candidate == null)
             {
                 throw new ArgumentException("Didn't find any candidates specified");
