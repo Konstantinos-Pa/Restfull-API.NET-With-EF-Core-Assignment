@@ -34,7 +34,7 @@ namespace Project_Bootcamp_2025.Authentication
                 if (result.Succeeded)
                 {
                     //try to assign role
-                    var roleresult = await accountUser.AddToRoleAsync(user, AppRoles.Administrator);
+                    var roleresult = await accountUser.AddToRoleAsync(user, AppRoles.User);
                     if (roleresult.Succeeded)
                     {
                         return Ok();
@@ -60,7 +60,8 @@ namespace Project_Bootcamp_2025.Authentication
                 {
                     if (await accountUser.CheckPasswordAsync(user, model.Password))
                     {
-                        var token = GenerateToken(model.UserName);
+                        var token = GenerateToken(user,model.UserName);
+                        var Id = user.Id;
                         return Ok(new { token });
                     }
                 }
@@ -68,7 +69,7 @@ namespace Project_Bootcamp_2025.Authentication
             }
             return BadRequest(ModelState);
         }
-        private string? GenerateToken(string userName)
+        private async Task<string?> GenerateToken(Candidate model,string userName)
         {
             var secret = configuration["JwtConfig:Secret"];
             var issuer = configuration["JwtConfig:ValidIssuer"];
@@ -79,12 +80,17 @@ namespace Project_Bootcamp_2025.Authentication
             }
             var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
             var tokenHandler = new JwtSecurityTokenHandler();
+            //add roles as claims
+            var userRoles = await accountUser.GetRolesAsync(model);
+            var claims = new List<Claim>
+            {
+                new (ClaimTypes.Name, userName)
+            };
+            claims.AddRange(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[]
-                {
-                    new Claim(ClaimTypes.Name, userName)
-                }),
+                //generate token based on roles
+                Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.AddDays(1),
                 Issuer = issuer,
                 Audience = audience,

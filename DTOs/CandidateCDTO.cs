@@ -46,7 +46,6 @@ namespace Assignment.DTOs
         [Required(ErrorMessage = "Password is Required")]
         public string Password { get; set; } = string.Empty;
 
-        public List<Certificate> Certificates { get; set; } = new List<Certificate>();
 
     }
 }

@@ -6,7 +6,6 @@ namespace Assignment.Repository
 {
     public interface ICandidatesRepository
     {
-        Task<string> AddCandidateAsync(Candidate candidate);
         Task DeleteCandidateAsync(string id);
         Task<Candidate> GetCandidateByIdAsync(string id);
         Task<List<Candidate>> GetCandidatesAsync();

@@ -36,6 +36,9 @@ namespace Assignment.DTOs
         public string? NativeLanguage { get; set; }
 
         [Required]
+        public string UserName { get; set; } = string.Empty;
+
+        [Required]
         public string? PhoneNumber { get; set; }
 
         public List<Certificate> Certificates { get; set; } = new List<Certificate>();
