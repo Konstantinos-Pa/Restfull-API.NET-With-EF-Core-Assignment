@@ -27,7 +27,7 @@ namespace Assignment.Models
 
 
         //Navigational Property
-        public ICollection<Address>? Addresses { get; set; }
+        public Address? Address { get; set; }
 
 
         public PhotoId? PhotoId { get; set; }

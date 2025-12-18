@@ -40,15 +40,6 @@ namespace Assignment.Repository
             {
                 throw new ArgumentNullException(nameof(photoId) + " Is Null (Thrown from AddPhotoIdAsync)");
             }
-            if (photoId.CandidateId.IsNullOrEmpty())
-            {
-                throw new ArgumentNullException(nameof(photoId.CandidateId) + " Is Null (Thrown from AddPhotoIdAsync)");
-            }
-            Candidate? candidate = await _context.Candidates.FirstOrDefaultAsync(c => c.Id == photoId.CandidateId);
-            if (candidate == null)
-            {
-                throw new ArgumentException("Didn't find any candidates specified");
-            }
             await _context.photoIds.AddAsync(photoId);
             await _context.SaveChangesAsync();
             return photoId.Id;
@@ -69,7 +60,6 @@ namespace Assignment.Repository
             existingPhotoId.PhotoIdImage = photoId.PhotoIdImage;
             existingPhotoId.PhotoIdNumber = photoId.PhotoIdNumber;
             existingPhotoId.DateOfIssue = photoId.DateOfIssue;
-            existingPhotoId.CandidateId = photoId.CandidateId;
 
             await _context.SaveChangesAsync();
         }

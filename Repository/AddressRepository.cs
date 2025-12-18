@@ -34,20 +34,25 @@ namespace Assignment.Repository
             return address;
         }
 
+        public async Task<Address> GetAddressByCandidateIdAsync(string id)
+        {
+            if (id.IsNullOrEmpty())
+            {
+                throw new ArgumentNullException(nameof(id) + " is Null. (Thrown from GetAddressByCandidateIdAsync)");
+            }
+            Address? address = await _context.Addresses.FirstOrDefaultAsync(a => a.CandidateId == id);
+            if (address == null)
+            {
+                throw new Exception("Address not found (Thrown from GetAddressByCandidateIdAsync)");
+            }
+            return address;
+        }
+
         public async Task<int> AddAddressAsync(Address address)
         {
             if (address == null)
             {
                 throw new ArgumentNullException(nameof(address) + " Is Null (Thrown from AddAddressAsync)");
-            }
-            if (address.CandidateId.IsNullOrEmpty())
-            {
-                throw new ArgumentNullException(nameof(address.CandidateId) + " Is Null (Thrown from AddAddressAsync)");
-            }
-            Candidate? candidate = await _context.Candidates.FirstOrDefaultAsync(c => c.Id == address.CandidateId);
-            if (candidate == null)
-            {
-                throw new ArgumentException("Didn't find any candidates specified");
             }
             await _context.Addresses.AddAsync(address);
             await _context.SaveChangesAsync();
@@ -71,7 +76,6 @@ namespace Assignment.Repository
             existingAddress.PostalCode = address.PostalCode;
             existingAddress.Country = address.Country;
             existingAddress.LandlineNumber = address.LandlineNumber;
-            existingAddress.CandidateId = address.CandidateId;
             await _context.SaveChangesAsync();
         }
 

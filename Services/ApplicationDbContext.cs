@@ -107,8 +107,8 @@ namespace Assignment.Service
                 .HasMaxLength(5);
 
                 entity.HasOne(e=>e.Candidate)
-                    .WithMany(e=>e.Addresses)
-                    .HasForeignKey (e => e.CandidateId);
+                    .WithOne(e=>e.Address)
+                    .HasForeignKey<Address> (e => e.CandidateId);
 
             });
 
