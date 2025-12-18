@@ -41,7 +41,6 @@ namespace Assignment.DTOs
         [Required]
         public string? PhoneNumber { get; set; }
 
-        public List<Certificate> Certificates { get; set; } = new List<Certificate>();
 
     }
 }

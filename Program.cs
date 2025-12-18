@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Project.Repository;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -44,7 +43,6 @@ namespace Assignment
             builder.Services.AddScoped<ICertificateRepository, CertificatesRepository>();
             builder.Services.AddScoped<IPhotoIdRepository, PhotoIdRepository>();
             builder.Services.AddScoped<ICandidatesAnalyticsRepository, CandidatesAnalyticsRepository>();
-            builder.Services.AddScoped<ICandidatesCertificates, CandidatesCertificates>();
 
             builder.Services.AddControllers()
              .AddJsonOptions(options =>

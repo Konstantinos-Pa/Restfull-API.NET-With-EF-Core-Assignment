@@ -15,6 +15,7 @@ namespace Assignment.Controllers
     public class CandidatesController : ControllerBase
     {
         private readonly ICandidatesRepository _candidatesRepository;
+
         public CandidatesController(ICandidatesRepository candidatesRepository)
         {
             _candidatesRepository = candidatesRepository;
@@ -81,6 +82,56 @@ namespace Assignment.Controllers
                 return BadRequest(ex.Message);
             }
             catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpPut("{id:guid}/{CId:int}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> AddCandidatesCertificate([FromRoute] string id, [FromRoute] int CId)
+        {
+            try
+            {
+                await _candidatesRepository.AddCandidatesCertificateAsync(id, CId);
+                return NoContent();
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpPut("remove/{id:guid}/{CId:int}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> RemoveCandidatesCertificate([FromRoute] string id, [FromRoute] int CId)
+        {
+            try
+            {
+                await _candidatesRepository.RemoveCandidatesCertificateAsync(id, CId);
+                return NoContent();
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (InvalidOperationException ex)
             {
                 return BadRequest(ex.Message);
             }

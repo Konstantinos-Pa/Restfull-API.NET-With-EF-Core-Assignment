@@ -1,7 +1,9 @@
-﻿namespace Project.DTOs
+﻿using Assignment.Models;
+
+namespace Assignment.DTOs
 {
     public class CandidatesCertificatesDTO
     {
-        List<int>? CandidatesCertificates { get; set; } = new List<int>();
+        List<Certificate>? CandidatesCertificates { get; set; } = new List<Certificate>();
     }
 }
