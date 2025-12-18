@@ -6,7 +6,7 @@ namespace Project.Repository
 {
     public interface ICandidatesCertificates
     {
-        Task AddCandidatesCertificateAsync(int candidateId, int certificateId);
-        Task RemoveCandidatesCertificateAsync(int candidateId, int certificateId);
+        Task AddCandidatesCertificateAsync(string candidateId, int certificateId);
+        Task RemoveCandidatesCertificateAsync(string candidateId, int certificateId);
     }
 }

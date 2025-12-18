@@ -1,5 +1,4 @@
 ﻿using Assignment.Models;
-using AuthenticationDemo.Authentication;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel;
@@ -7,7 +6,7 @@ using System.ComponentModel;
 namespace Assignment.Service
 {
     public class ApplicationDbContext
-          : IdentityDbContext<AppUser>
+          : IdentityDbContext<Candidate>
     {
         public ApplicationDbContext(
             DbContextOptions<ApplicationDbContext> options)
@@ -21,22 +20,21 @@ namespace Assignment.Service
         public DbSet<Address> Addresses { get; set; }
         public DbSet<CandidatesAnalytics> CandidatesAnalytics { get; set; }
         public DbSet<Certificate> Certificates { get; set; }
-        public DbSet<Mobile> Mobiles { get; set; }
         public DbSet<PhotoId> photoIds { get; set; }
 
 
             protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<AppUser>(entity =>
-            {
-                entity.HasOne(e => e.Candidate)
-                    .WithOne(e => e.AppUser)
-                    .HasForeignKey<AppUser>(e => e.CandidateId)
-                    .IsRequired(false);
+            //modelBuilder.Entity<AppUser>(entity =>
+            //{
+            //    entity.HasOne(e => e.Candidate)
+            //        .WithOne(e => e.AppUser)
+            //        .HasForeignKey<AppUser>(e => e.CandidateId)
+            //        .IsRequired(false);
 
-                entity.Property(e => e.CreatedDate)
-                    .HasDefaultValueSql("CURRENT_DATE");
-            });
+            //    entity.Property(e => e.CreatedDate)
+            //        .HasDefaultValueSql("CURRENT_DATE");
+            //});
             // Certificate entity configuration
             modelBuilder.Entity<Certificate>(entity =>
             {
@@ -68,19 +66,6 @@ namespace Assignment.Service
                       .OnDelete(DeleteBehavior.Cascade);
             });
 
-            modelBuilder.Entity<Mobile>(entity =>
-            {
-                entity.HasKey(e => e.Id);
-                
-                entity.Property(e=> e.MobileNumber)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-                entity.HasOne(c => c.Candidate)
-                    .WithMany(c => c.Mobiles)
-                    .HasForeignKey(c =>c.CandidateNumber);
-            });
-
             modelBuilder.Entity<PhotoId>(entity =>
             {
                 entity.HasKey(e => e.Id);
@@ -97,7 +82,7 @@ namespace Assignment.Service
 
                 entity.HasOne(e => e.Candidate)
                     .WithOne(e => e.PhotoId)
-                    .HasForeignKey<PhotoId>(e => e.CandidateNumber);
+                    .HasForeignKey<PhotoId>(e => e.CandidateId);
 
             });
 
@@ -135,14 +120,14 @@ namespace Assignment.Service
 
                 entity.HasOne(e=>e.Candidate)
                     .WithMany(e=>e.Addresses)
-                    .HasForeignKey (e => e.CandidateNumber);
+                    .HasForeignKey (e => e.CandidateId);
 
             });
 
             modelBuilder.Entity<Candidate>(entity =>
             {
                 // Primary key
-                entity.HasKey(c => c.CandidateNumber);
+                //entity.HasKey(c => c.CandidateNumber);
 
                 // Properties
                 entity.Property(c => c.FirstName)
@@ -171,6 +156,8 @@ namespace Assignment.Service
                       .IsRequired()
                       .HasMaxLength(50);
 
+                entity.Property(e => e.CreatedDate)
+                    .HasDefaultValueSql("CURRENT_DATE");
             });
 
 

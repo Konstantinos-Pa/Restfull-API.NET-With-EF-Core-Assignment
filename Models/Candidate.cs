@@ -1,4 +1,4 @@
-﻿using AuthenticationDemo.Authentication;
+﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -10,9 +10,8 @@ namespace Assignment.Models
         Female
     }
 
-    public class Candidate
+    public class Candidate : IdentityUser
     {
-        public int CandidateNumber { get; set; }
 
         public string? FirstName { get; set; }
 
@@ -24,22 +23,20 @@ namespace Assignment.Models
 
         public DateOnly DateOfBirth { get; set; }
 
-        public string? Email { get; set; }
-
         public string? NativeLanguage { get; set; }
 
 
         //Navigational Property
         public ICollection<Address>? Addresses { get; set; }
 
-        public ICollection<Mobile>? Mobiles { get; set; }
 
         public PhotoId? PhotoId { get; set; }
 
-        public AppUser? AppUser { get; set; }
+       // public AppUser? AppUser { get; set; }
 
         public ICollection<Certificate>? Certificates { get; set; }
 
+        public DateOnly? CreatedDate { get; set; }
 
 
     }

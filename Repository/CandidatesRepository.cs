@@ -1,6 +1,7 @@
 ﻿using Assignment.Models;
 using Assignment.Service;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using NuGet.ContentModel;
 using System.Globalization;
 
@@ -19,13 +20,13 @@ namespace Assignment.Repository
             return await _context.Candidates.ToListAsync();
         }
 
-        public async Task<Candidate> GetCandidateByIdAsync(int id)
+        public async Task<Candidate> GetCandidateByIdAsync(string id)
         {
-            if (id <= 0)
+            if (id.IsNullOrEmpty())
             {
                 throw new ArgumentNullException(nameof(id) + "ID must be greater than zero. (Thrown from GetCandidateByIdAsync)");
             }
-            Candidate? candidate = await _context.Candidates.FirstOrDefaultAsync(c => c.CandidateNumber == id);
+            Candidate? candidate = await _context.Candidates.FirstOrDefaultAsync(c => c.Id == id);
             if (candidate == null)
             {
                 throw new Exception("Candidate not found (Thrown from GetCandidateByIdAsync)");
@@ -33,7 +34,7 @@ namespace Assignment.Repository
             return candidate;
         }
 
-        public async Task<int> AddCandidateAsync(Candidate candidate)
+        public async Task<string> AddCandidateAsync(Candidate candidate)
         {
             if (candidate == null)
             {
@@ -41,16 +42,16 @@ namespace Assignment.Repository
             }
             _context.Candidates.Add(candidate);
             await _context.SaveChangesAsync();
-            return candidate.CandidateNumber;
+            return candidate.Id;
         }
 
-        public async Task UpdateCandidateAsync(int id, Candidate candidate)
+        public async Task UpdateCandidateAsync(string id, Candidate candidate)
         {
             if (candidate == null)
             {
                 throw new ArgumentNullException(nameof(candidate) + "Is Null (Thrown from UpdateCandidateAsync)");
             }
-            else if (id <= 0)
+            else if (id.IsNullOrEmpty())
             {
                 throw new ArgumentNullException(nameof(id) + "ID must be greater than zero. (Thrown from UpdateCandidateAsync)");
             }
@@ -62,13 +63,14 @@ namespace Assignment.Repository
             existingCandidate.DateOfBirth = candidate.DateOfBirth;
             existingCandidate.Email = candidate.Email;
             existingCandidate.NativeLanguage = candidate.NativeLanguage;
+            existingCandidate.PhoneNumber = candidate.PhoneNumber;
 
-            await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteCandidateAsync(int id)
+        public async Task DeleteCandidateAsync(string id)
         {
-            if (id <= 0)
+            if (id.IsNullOrEmpty())
             {
                 throw new ArgumentNullException(nameof(id) + " must be greater than zero. (Thrown from DeleteCandidateAsync)");
             }
@@ -78,14 +80,14 @@ namespace Assignment.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<Object>> MarksPerTopicPerCertificateAsync(int id)
+        public async Task<IEnumerable<Object>> MarksPerTopicPerCertificateAsync(string id)
         {
-            if (id == 0)
+            if (id.IsNullOrEmpty())
             {
                 throw new ArgumentNullException(nameof(id) + "Is Null (Thrown from MarksPerTopicPerCertificateAsync)");
             }
             var certificates = await _context.Candidates
-                .Where(c => c.CandidateNumber == id)
+                .Where(c => c.Id == id)
                 .Include(c => c.Certificates ?? Enumerable.Empty<Certificate>())
                 .ThenInclude(cert => cert.CandidatesAnalytics)
                 .SelectMany(c => c.Certificates ?? Enumerable.Empty<Certificate>())
@@ -113,16 +115,16 @@ namespace Assignment.Repository
             return marksPerTopicWithTitle;
         }
 
-        public async Task<List<Certificate>> ObtainedCertificatesOfCandidate(int id)
+        public async Task<List<Certificate>> ObtainedCertificatesOfCandidate(string id)
         {
-            if (id <= 0)
+            if (id.IsNullOrEmpty())
             {
                 throw new ArgumentNullException(nameof(id), " must be greater than zero.");
             }
 
             var candidates = await _context.Candidates
             .Include(c => c.Certificates!)
-            .FirstOrDefaultAsync(c => c.CandidateNumber == id);
+            .FirstOrDefaultAsync(c => c.Id == id);
 
             if (candidates == null)
             {
@@ -134,9 +136,9 @@ namespace Assignment.Repository
 
         }
 
-        public async Task<List<Certificate>> NotObtainedCertificatesOfCandidate(int id)
+        public async Task<List<Certificate>> NotObtainedCertificatesOfCandidate(string id)
         {
-            if (id <= 0)
+            if (id.IsNullOrEmpty())
             {
                 throw new ArgumentNullException(nameof(id), " must be greater than zero.");
             }
@@ -157,16 +159,16 @@ namespace Assignment.Repository
             return notObtainedCertificates;
         }
 
-        public async Task<List<Certificate>?> GetCertificatesByDateAsync(int candidateId)
+        public async Task<List<Certificate>?> GetCertificatesByDateAsync(string candidateId)
         {
-            if (candidateId <= 0)
+            if (candidateId.IsNullOrEmpty())
             {
                 throw new ArgumentNullException(nameof(candidateId), " must be greater than zero. (Thrown from GetCertificatesByDateAsync)");
             }
 
             var candidate = await _context.Candidates
             .Include(c => c.Certificates)
-            .FirstOrDefaultAsync(c => c.CandidateNumber == candidateId);
+            .FirstOrDefaultAsync(c => c.Id == candidateId);
             if (candidate == null)
             {
                 throw new KeyNotFoundException(nameof(candidate));
@@ -180,12 +182,12 @@ namespace Assignment.Repository
 
         }
 
-        public async Task<List<int>> GetCertificateCountsByDateRangeAsync(int candidateId, string Start, string End)
+        public async Task<List<int>> GetCertificateCountsByDateRangeAsync(string candidateId, string Start, string End)
         {
             List<Certificate> certificates;
             int passed = 0, failed = 0;
             var result = new List<int> { 0, 0 };
-            if (candidateId <= 0)
+            if (candidateId.IsNullOrEmpty())
             {
                 throw new ArgumentNullException(nameof(candidateId), " must be greater than zero. (Thrown from GetCertificateCountsByDateRangeAsync)");
             }
@@ -202,7 +204,7 @@ namespace Assignment.Repository
             {
                 if (DateOnly.TryParseExact(End, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateOnly dateE))
                 {
-                    certificates = await _context.Candidates.Where(c => c.CandidateNumber == candidateId).SelectMany(c => c.Certificates ?? Enumerable.Empty<Certificate>()).Where(c => c.ScoreReportDate >= dateS && c.ScoreReportDate <= dateE).ToListAsync();
+                    certificates = await _context.Candidates.Where(c => c.Id == candidateId).SelectMany(c => c.Certificates ?? Enumerable.Empty<Certificate>()).Where(c => c.ScoreReportDate >= dateS && c.ScoreReportDate <= dateE).ToListAsync();
                 }
                 else
                 {

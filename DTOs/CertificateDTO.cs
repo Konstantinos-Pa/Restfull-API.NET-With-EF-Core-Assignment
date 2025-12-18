@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Assignment.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace Assignment.DTOs
 {
@@ -24,6 +25,8 @@ namespace Assignment.DTOs
         public int PercentageScore { get; set; }
 
         public bool AssessmentResultLabel { get; set; }
+
+        public List<Candidate> candidates { get; set; }= new List<Candidate>();
        
     }
 }

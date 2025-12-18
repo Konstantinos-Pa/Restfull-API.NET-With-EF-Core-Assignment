@@ -1,6 +1,5 @@
 ﻿using Assignment.DTOs;
 using Assignment.Models;
-using AuthenticationDemo.Authentication;
 using Mapster;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -15,10 +14,10 @@ namespace Project_Bootcamp_2025.Authentication
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AccountController(UserManager<AppUser> accountUser, IConfiguration configuration) : ControllerBase
+    public class AccountController(UserManager<Candidate> accountUser, IConfiguration configuration) : ControllerBase
     {
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] AppUserDTO model)
+        public async Task<IActionResult> Register([FromBody] CandidateCDTO model)
         {
             if (ModelState.IsValid)
             {
@@ -28,7 +27,7 @@ namespace Project_Bootcamp_2025.Authentication
                     ModelState.AddModelError("error", "User name is already taken.");
                     return BadRequest(ModelState);
                 }
-                var user = model.Adapt<AppUser>();
+                var user = model.Adapt<Candidate>();
                 user.SecurityStamp = Guid.NewGuid().ToString();
                 //try to save user
                 var result = await accountUser.CreateAsync(user, model.Password);

@@ -2,8 +2,8 @@ using Assignment.DTOs;
 using Assignment.Models;
 using Assignment.Repository;
 using Assignment.Service;
-using AuthenticationDemo.Authentication;
 using Mapster;
+using MapsterMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -35,11 +35,13 @@ namespace Assignment
                 });
             });
 
+            MapsterConfig.RegisterMappings();
 
+            builder.Services.AddSingleton(TypeAdapterConfig.GlobalSettings);
+            builder.Services.AddScoped<IMapper, Mapper>();
             builder.Services.AddScoped<ICandidatesRepository, CandidatesRepository>();
             builder.Services.AddScoped<IAddressRepository, AddressRepository>();
             builder.Services.AddScoped<ICertificateRepository, CertificatesRepository>();
-            builder.Services.AddScoped<IMobileRepository, MobileRepository>();
             builder.Services.AddScoped<IPhotoIdRepository, PhotoIdRepository>();
             builder.Services.AddScoped<ICandidatesAnalyticsRepository, CandidatesAnalyticsRepository>();
             builder.Services.AddScoped<ICandidatesCertificates, CandidatesCertificates>();
@@ -50,7 +52,7 @@ namespace Assignment
                  options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
              });
 
-            builder.Services.AddIdentityCore<AppUser>()
+            builder.Services.AddIdentityCore<Candidate>()
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();

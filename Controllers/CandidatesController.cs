@@ -28,7 +28,7 @@ namespace Assignment.Controllers
             try
             {
                 var candidates = await _candidatesRepository.GetCandidatesAsync();
-                return Ok(candidates.Adapt<List<CandidateDTO>>());
+                return Ok(candidates.Adapt<List<CandidateRUDDTO>>());
             }
             catch (Exception ex)
             {
@@ -36,16 +36,16 @@ namespace Assignment.Controllers
             }
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet("{id:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetCandidateById([FromRoute] int id)
+        public async Task<IActionResult> GetCandidateById([FromRoute] string id)
         {
             try
             {
                 var candidate = await _candidatesRepository.GetCandidateByIdAsync(id);
-                return Ok(candidate.Adapt<CandidateDTO>());
+                return Ok(candidate.Adapt<CandidateRUDDTO>());
             }
             catch (ArgumentNullException ex)
             {
@@ -57,46 +57,11 @@ namespace Assignment.Controllers
             }
         }
 
-        [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> AddCandidate([FromBody] CandidateDTO candidateDTO)
-        {
-            try
-            {
-                var candidate = candidateDTO.Adapt<Candidate>();
-                if (ModelState.IsValid)
-                {
-                    int Id = await _candidatesRepository.AddCandidateAsync(candidate);
-                    var resultDto = candidate.Adapt<CandidateDTO>();
-
-                    return CreatedAtAction(
-                        nameof(GetCandidateById),
-                        new { Id },
-                        resultDto
-                    );
-                }
-                else
-                {
-                    return BadRequest(ModelState);
-                }
-            }
-            catch (ArgumentNullException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
-
-        [HttpPut("{id:int}")]
+        [HttpPut("{id:guid}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdateCandidate([FromRoute] int id, [FromBody] CandidateDTO candidateDTO)
+        public async Task<IActionResult> UpdateCandidate([FromRoute] string id, [FromBody] CandidateRUDDTO candidateDTO)
         {
             try
             {
@@ -121,11 +86,11 @@ namespace Assignment.Controllers
             }
         }
 
-        [HttpDelete("{id:int}")]
+        [HttpDelete("{id:guid}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> DeleteCandidate([FromRoute] int id)
+        public async Task<IActionResult> DeleteCandidate([FromRoute] string id)
         {
             try
             {
@@ -142,12 +107,12 @@ namespace Assignment.Controllers
             }
         }
 
-        [HttpGet("MarksPerCertificatesOfCandidate/{id:int}")]
+        [HttpGet("MarksPerCertificatesOfCandidate/{id:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetMarksPerTopicPerCertificateByCandidate([FromRoute] int id)
+        public async Task<IActionResult> GetMarksPerTopicPerCertificateByCandidate([FromRoute] string id)
         {
             try
             {
@@ -170,12 +135,12 @@ namespace Assignment.Controllers
 
         }
 
-        [HttpGet("CertificatesOfCandidate/{id:int}")]
+        [HttpGet("CertificatesOfCandidate/{id:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetObtainedCertificatesByCandidate([FromRoute] int id)
+        public async Task<IActionResult> GetObtainedCertificatesByCandidate([FromRoute] string id)
         {
             try
             {
@@ -198,12 +163,12 @@ namespace Assignment.Controllers
 
         }
 
-        [HttpGet("NotCertificatesOfCandidate/{id:int}")]
+        [HttpGet("NotCertificatesOfCandidate/{id:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetNotObtainedCertificatesByCandidate([FromRoute] int id)
+        public async Task<IActionResult> GetNotObtainedCertificatesByCandidate([FromRoute] string id)
         {
             try
             {
@@ -225,12 +190,12 @@ namespace Assignment.Controllers
             }
         }
 
-        [HttpGet("CertificatesByDate/{id:int}")]
+        [HttpGet("CertificatesByDate/{id:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetCertificatesByDate([FromRoute] int id)
+        public async Task<IActionResult> GetCertificatesByDate([FromRoute] string id)
         {
             try
             {
@@ -252,12 +217,12 @@ namespace Assignment.Controllers
             }
         }
 
-        [HttpGet("CertificatesCountByDateRange/{id:int}/{StartD:alpha}/{EndD:alpha}")]
+        [HttpGet("CertificatesCountByDateRange/{id:guid}/{StartD:alpha}/{EndD:alpha}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetCertificateCountsByDateRange([FromRoute] int id, [FromRoute] string StartD, [FromRoute] string EndD)
+        public async Task<IActionResult> GetCertificateCountsByDateRange([FromRoute] string id, [FromRoute] string StartD, [FromRoute] string EndD)
         {
             try
             {

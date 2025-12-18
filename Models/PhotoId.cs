@@ -19,7 +19,7 @@ namespace Assignment.Models
 
         public DateOnly DateOfIssue { get; set; }
 
-        public int CandidateNumber { get; set; }
+        public string? CandidateId { get; set; }
         //Nagigational Property
         public Candidate? Candidate { get; set; }
     }

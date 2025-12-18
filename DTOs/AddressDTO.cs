@@ -17,7 +17,7 @@ namespace Assignment.DTOs
         public string? State { get; set; }
 
         [Required]
-        [MaxLength(5)]
+        [Range(0, 99999)]
         public int PostalCode { get; set; }
 
         [Required]

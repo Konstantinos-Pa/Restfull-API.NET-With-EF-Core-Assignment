@@ -3,6 +3,7 @@ using Assignment.DTOs;
 using Assignment.Service;
 using Microsoft.EntityFrameworkCore;
 using Mapster;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Assignment.Repository
 {
@@ -39,11 +40,11 @@ namespace Assignment.Repository
             {
                 throw new ArgumentNullException(nameof(address) + " Is Null (Thrown from AddAddressAsync)");
             }
-            if (address.CandidateNumber == 0)
+            if (address.CandidateId.IsNullOrEmpty())
             {
-                throw new ArgumentNullException(nameof(address.CandidateNumber) + " Is Null (Thrown from AddAddressAsync)");
+                throw new ArgumentNullException(nameof(address.CandidateId) + " Is Null (Thrown from AddAddressAsync)");
             }
-            Candidate? candidate = await _context.Candidates.FirstOrDefaultAsync(c => c.CandidateNumber == address.CandidateNumber);
+            Candidate? candidate = await _context.Candidates.FirstOrDefaultAsync(c => c.Id == address.CandidateId);
             if (candidate == null)
             {
                 throw new ArgumentException("Didn't find any candidates specified");
@@ -70,7 +71,7 @@ namespace Assignment.Repository
             existingAddress.PostalCode = address.PostalCode;
             existingAddress.Country = address.Country;
             existingAddress.LandlineNumber = address.LandlineNumber;
-            existingAddress.CandidateNumber = address.CandidateNumber;
+            existingAddress.CandidateId = address.CandidateId;
             await _context.SaveChangesAsync();
         }
 

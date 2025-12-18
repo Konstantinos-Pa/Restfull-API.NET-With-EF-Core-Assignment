@@ -17,7 +17,7 @@ namespace Assignment.Models
 
         public int LandlineNumber { get; set; }
 
-        public int CandidateNumber { get; set; }
+        public string CandidateId { get; set; } = null!;
         //nagigational property
         public Candidate? Candidate { get; set; }
     }

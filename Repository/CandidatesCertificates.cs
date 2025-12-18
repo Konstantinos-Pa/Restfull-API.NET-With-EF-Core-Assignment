@@ -1,6 +1,7 @@
 ﻿using Assignment.Service;
 using Assignment.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Project.Repository
 {
@@ -12,9 +13,9 @@ namespace Project.Repository
             _context = context;
         }
 
-        public async Task AddCandidatesCertificateAsync(int candidateId, int certificateId)
+        public async Task AddCandidatesCertificateAsync(string candidateId, int certificateId)
         {
-            if (candidateId <= 0)
+            if (candidateId.IsNullOrEmpty())
                 throw new ArgumentOutOfRangeException(nameof(candidateId));
 
             if (certificateId <= 0)
@@ -22,7 +23,7 @@ namespace Project.Repository
 
             var candidate = await _context.Candidates
                 .Include(c => c.Certificates) // Ensure collection is loaded
-                .FirstOrDefaultAsync(c => c.CandidateNumber == candidateId);
+                .FirstOrDefaultAsync(c => c.Id == candidateId);
 
             if (candidate == null)
                 throw new InvalidOperationException("Candidate not found.");
@@ -43,9 +44,9 @@ namespace Project.Repository
             }
         }
 
-        public async Task RemoveCandidatesCertificateAsync(int candidateId, int certificateId)
+        public async Task RemoveCandidatesCertificateAsync(string candidateId, int certificateId)
         {
-            if (candidateId <= 0)
+            if (candidateId.IsNullOrEmpty())
                 throw new ArgumentOutOfRangeException(nameof(candidateId));
 
             if (certificateId <= 0)
@@ -53,7 +54,7 @@ namespace Project.Repository
 
             var candidate = await _context.Candidates
                 .Include(c => c.Certificates) // Ensure collection is loaded
-                .FirstOrDefaultAsync(c => c.CandidateNumber == candidateId);
+                .FirstOrDefaultAsync(c => c.Id == candidateId);
 
             if (candidate == null)
                 throw new InvalidOperationException("Candidate not found.");

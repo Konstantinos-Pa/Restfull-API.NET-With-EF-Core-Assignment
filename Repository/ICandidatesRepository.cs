@@ -6,16 +6,16 @@ namespace Assignment.Repository
 {
     public interface ICandidatesRepository
     {
-        Task<int> AddCandidateAsync(Candidate candidate);
-        Task DeleteCandidateAsync(int id);
-        Task<Candidate> GetCandidateByIdAsync(int id);
+        Task<string> AddCandidateAsync(Candidate candidate);
+        Task DeleteCandidateAsync(string id);
+        Task<Candidate> GetCandidateByIdAsync(string id);
         Task<List<Candidate>> GetCandidatesAsync();
-        Task UpdateCandidateAsync(int id, Candidate candidate);
-        Task<IEnumerable<Object>> MarksPerTopicPerCertificateAsync(int id);
-        Task<List<Certificate>> ObtainedCertificatesOfCandidate(int candidateNumber);
-        Task<List<Certificate>> NotObtainedCertificatesOfCandidate(int candidateNumber);
-        Task<List<Certificate>?> GetCertificatesByDateAsync(int candidateId);
-        Task<List<int>> GetCertificateCountsByDateRangeAsync(int candidateId, string Start, string End);
+        Task UpdateCandidateAsync(string id, Candidate candidate);
+        Task<IEnumerable<Object>> MarksPerTopicPerCertificateAsync(string id);
+        Task<List<Certificate>> ObtainedCertificatesOfCandidate(string candidateNumber);
+        Task<List<Certificate>> NotObtainedCertificatesOfCandidate(string candidateNumber);
+        Task<List<Certificate>?> GetCertificatesByDateAsync(string candidateId);
+        Task<List<int>> GetCertificateCountsByDateRangeAsync(string candidateId, string Start, string End);
 
     }
 }

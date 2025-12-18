@@ -2,6 +2,7 @@
 using Assignment.Models;
 using Assignment.Service;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Net;
 
 namespace Assignment.Repository
@@ -39,11 +40,11 @@ namespace Assignment.Repository
             {
                 throw new ArgumentNullException(nameof(photoId) + " Is Null (Thrown from AddPhotoIdAsync)");
             }
-            if (photoId.CandidateNumber == 0)
+            if (photoId.CandidateId.IsNullOrEmpty())
             {
-                throw new ArgumentNullException(nameof(photoId.CandidateNumber) + " Is Null (Thrown from AddPhotoIdAsync)");
+                throw new ArgumentNullException(nameof(photoId.CandidateId) + " Is Null (Thrown from AddPhotoIdAsync)");
             }
-            Candidate? candidate = await _context.Candidates.FirstOrDefaultAsync(c => c.CandidateNumber == photoId.CandidateNumber);
+            Candidate? candidate = await _context.Candidates.FirstOrDefaultAsync(c => c.Id == photoId.CandidateId);
             if (candidate == null)
             {
                 throw new ArgumentException("Didn't find any candidates specified");
@@ -68,7 +69,7 @@ namespace Assignment.Repository
             existingPhotoId.PhotoIdImage = photoId.PhotoIdImage;
             existingPhotoId.PhotoIdNumber = photoId.PhotoIdNumber;
             existingPhotoId.DateOfIssue = photoId.DateOfIssue;
-            existingPhotoId.CandidateNumber = photoId.CandidateNumber;
+            existingPhotoId.CandidateId = photoId.CandidateId;
 
             await _context.SaveChangesAsync();
         }
