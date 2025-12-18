@@ -34,6 +34,20 @@ namespace Assignment.Repository
             return candidate;
         }
 
+        public async Task<Candidate> GetCandidateByUserNameAsync(string username)
+        {
+            if (username.IsNullOrEmpty())
+            {
+                throw new ArgumentNullException(nameof(username) + " is Null. (Thrown from GetCandidateByUserNameAsync)");
+            }
+            Candidate? candidate = await _context.Candidates.FirstOrDefaultAsync(c => c.UserName == username);
+            if (candidate == null)
+            {
+                throw new Exception("Candidate not found (Thrown from GetCandidateByIdAsync)");
+            }
+            return candidate;
+        }
+
         public async Task UpdateCandidateAsync(string id, Candidate candidate)
         {
             if (candidate == null)

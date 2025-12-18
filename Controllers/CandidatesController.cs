@@ -58,6 +58,27 @@ namespace Assignment.Controllers
             }
         }
 
+        [HttpGet("{username}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetCandidateByUserName([FromRoute] string username)
+        {
+            try
+            {
+                var candidate = await _candidatesRepository.GetCandidateByUserNameAsync(username);
+                return Ok(candidate.Adapt<CandidateRUDDTO>());
+            }
+            catch (ArgumentNullException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
         [HttpPut("{id:guid}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
