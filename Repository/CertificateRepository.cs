@@ -66,6 +66,7 @@ namespace Assignment.Repository
             // Update fields
             existingCertificate.Title = certificate.Title;
             existingCertificate.AssessmentTestCode = certificate.AssessmentTestCode;
+            existingCertificate.Description = certificate.Description;
             existingCertificate.ExaminationDate = certificate.ExaminationDate;
             existingCertificate.ScoreReportDate = certificate.ScoreReportDate;
             existingCertificate.CandidateScore = certificate.CandidateScore;

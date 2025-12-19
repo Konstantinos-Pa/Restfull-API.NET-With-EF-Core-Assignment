@@ -14,6 +14,8 @@ namespace Assignment.DTOs
         [Required]
         public string? AssessmentTestCode { get; set; }
 
+        public string? Description { get; set; }
+
         public DateOnly ExaminationDate { get; set; }
         
         public DateOnly ScoreReportDate { get; set; }
