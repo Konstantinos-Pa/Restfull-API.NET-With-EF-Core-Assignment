@@ -20,9 +20,10 @@ namespace Assignment.Service
         public DbSet<CandidatesAnalytics> CandidatesAnalytics { get; set; }
         public DbSet<Certificate> Certificates { get; set; }
         public DbSet<PhotoId> photoIds { get; set; }
+        public DbSet<Question> Questions { get; set; }
 
 
-            protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Certificate>(entity =>
             {
@@ -149,6 +150,35 @@ namespace Assignment.Service
 
                 entity.Property(e => e.CreatedDate)
                     .HasDefaultValueSql("CURRENT_DATE");
+            });
+            modelBuilder.Entity<Question>(entity =>
+            {
+                entity.HasKey(e=>e.Id);
+
+                entity.Property(e => e.question)
+                      .IsRequired();
+
+                entity.Property(e => e.answer1)
+                      .IsRequired();
+
+                entity.Property(e => e.answer2)
+                      .IsRequired();
+
+                entity.Property(e => e.answer3)
+                      .IsRequired();
+
+                entity.Property(e => e.answer4)
+                      .IsRequired();
+
+                entity.Property(e => e.correct)
+                      .IsRequired();
+
+                entity.Property(e => e.correct)
+                      .IsRequired();
+
+                entity.HasOne(e=>e.candidatesAnalytics)
+                    .WithMany(e=>e.Questions)
+                    .HasForeignKey(e=>e.CandidatesAnalyticsId);
             });
 
 

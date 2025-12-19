@@ -16,6 +16,6 @@ namespace Assignment.Models
         //navigational property
         public Certificate? Certificate { get; set; }
 
-        public ICollection<Questions>? Questions { get; set; }
+        public ICollection<Question>? Questions { get; set; }
     }
 }

@@ -43,6 +43,7 @@ namespace Assignment
             builder.Services.AddScoped<ICertificateRepository, CertificatesRepository>();
             builder.Services.AddScoped<IPhotoIdRepository, PhotoIdRepository>();
             builder.Services.AddScoped<ICandidatesAnalyticsRepository, CandidatesAnalyticsRepository>();
+            //builder.Services.AddScoped<IQuestionRepository, QuestionsRepository>();
 
             builder.Services.AddControllers()
              .AddJsonOptions(options =>
