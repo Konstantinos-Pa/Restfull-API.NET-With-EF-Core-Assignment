@@ -172,9 +172,10 @@ namespace Assignment.Service
                 entity.Property(e => e.correct)
                       .IsRequired();
 
-                entity.HasOne(e=>e.candidatesAnalytics)
-                    .WithMany(e=>e.Questions)
-                    .HasForeignKey(e=>e.CandidatesAnalyticsId);
+                entity.HasOne(e => e.candidatesAnalytics)
+                    .WithMany(e => e.Questions)
+                    .HasForeignKey(e => e.CandidatesAnalyticsId)
+                    .IsRequired(false);
             });
 
             modelBuilder.Entity<SaleCertificate>(entity => 

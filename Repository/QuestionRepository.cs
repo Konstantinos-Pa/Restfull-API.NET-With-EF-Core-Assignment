@@ -77,5 +77,13 @@ namespace Assignment.Repository
             _context.Questions.Remove(questions);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<List<Question>> GetRandomQuestionsAsync(int number)
+        {
+            return await _context.Questions
+                .OrderBy(q => Guid.NewGuid())
+                .Take(number)
+                .ToListAsync();
+        }
     }
 }

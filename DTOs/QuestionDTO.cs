@@ -25,7 +25,6 @@ namespace Assignment.DTOs
         [Required]
         public int? correct { get; set; }
 
-        [Required]
         public int CandidatesAnalyticsId { get; set; }
     }
 }

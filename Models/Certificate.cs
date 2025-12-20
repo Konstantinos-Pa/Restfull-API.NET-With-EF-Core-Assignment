@@ -15,7 +15,7 @@ namespace Assignment.Models
 
         public DateOnly ScoreReportDate { get; set; }
 
-        public int CandidateScore { get; set; }
+        public int? CandidateScore { get; set; }
 
         public int MaximumScore { get; set; }
 

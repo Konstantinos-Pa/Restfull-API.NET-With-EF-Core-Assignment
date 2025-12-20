@@ -10,5 +10,6 @@ namespace Assignment.Repository
         Task<int> AddQuestionsAsync(Question photoId);
         Task UpdateQuestionsAsync(int id, Question photoId);
         Task DeleteQuestionsAsync(int id);
+        Task<List<Question>> GetRandomQuestionsAsync(int number);
     }
 }

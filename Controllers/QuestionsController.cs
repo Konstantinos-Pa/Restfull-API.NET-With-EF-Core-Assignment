@@ -62,8 +62,6 @@ namespace Assignment.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> PostQuestions([FromBody] QuestionDTO QuestionDTO)
         {
-            try
-            {
                 var question = QuestionDTO.Adapt<Question>();
                 if (!ModelState.IsValid)
                 {
@@ -79,19 +77,7 @@ namespace Assignment.Controllers
                     resultDto
                 );
 
-            }
-            catch (ArgumentNullException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+            
         }
 
         [HttpPut("{id:int}")]
@@ -135,6 +121,23 @@ namespace Assignment.Controllers
             catch (ArgumentNullException ex)
             {
                 return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+
+        [HttpGet("Random/{number:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetRandomQuestions(int number)
+        {
+            try
+            {
+                var questions = await _repository.GetRandomQuestionsAsync(number);
+                return Ok(questions.Adapt<List<QuestionDTO>>());
             }
             catch (Exception ex)
             {

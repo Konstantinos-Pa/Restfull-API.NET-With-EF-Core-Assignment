@@ -18,7 +18,7 @@ namespace Assignment.Models
 
         public int? correct { get; set; }
 
-        public int CandidatesAnalyticsId { get; set; }
+        public int? CandidatesAnalyticsId { get; set; }
         public CandidatesAnalytics? candidatesAnalytics { get; set; }
     }
 }
