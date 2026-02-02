@@ -22,10 +22,22 @@ namespace Assignment.Service
         public DbSet<SaleCertificate> SaleCertificates { get; set; }
         public DbSet<PhotoId> photoIds { get; set; }
         public DbSet<Question> Questions { get; set; }
+        public DbSet<Department> Departments { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Department>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Name)
+                      .IsRequired()
+                      .HasMaxLength(50);
+                entity.Property(e => e.Phone)
+                      .IsRequired()
+                      .HasMaxLength(13);
+            });
+
             modelBuilder.Entity<Certificate>(entity =>
             {
                 entity.HasKey(e => e.Id); // Primary key

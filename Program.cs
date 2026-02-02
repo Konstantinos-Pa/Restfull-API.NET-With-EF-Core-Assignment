@@ -24,6 +24,12 @@ namespace Assignment
                 options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")
              ));
 
+            //for singleton services to use db context
+            builder.Services.AddDbContextFactory<ApplicationDbContext>(options =>
+                options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
+            );
+
+
             builder.Services.AddCors(options =>
             {
                 options.AddDefaultPolicy(policy =>
@@ -45,6 +51,7 @@ namespace Assignment
             builder.Services.AddScoped<ICandidatesAnalyticsRepository, CandidatesAnalyticsRepository>();
             builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
             builder.Services.AddScoped<ISaleCertificatesRepository, SaleCertificatesRepository>();
+            builder.Services.AddSingleton<IAiRoutingService, AiRoutingService>();
 
             builder.Services.AddControllers()
              .AddJsonOptions(options =>
