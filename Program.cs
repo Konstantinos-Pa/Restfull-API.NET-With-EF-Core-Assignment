@@ -51,6 +51,7 @@ namespace Assignment
             builder.Services.AddScoped<ICandidatesAnalyticsRepository, CandidatesAnalyticsRepository>();
             builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
             builder.Services.AddScoped<ISaleCertificatesRepository, SaleCertificatesRepository>();
+            builder.Services.AddScoped<IDepartmentRepository,DepartmentRepository>();
             builder.Services.AddSingleton<IAiRoutingService, AiRoutingService>();
 
             builder.Services.AddControllers()
