@@ -14,8 +14,8 @@ namespace Assignment.Controllers
             _aiRoutingService = aiRoutingService;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Post([FromBody] string request, int conversation)
+        [HttpPost("{conversation:int}")]
+        public async Task<IActionResult> Post([FromBody] string request,[FromRoute] int conversation)
         {
             if (string.IsNullOrWhiteSpace(request))
             {
