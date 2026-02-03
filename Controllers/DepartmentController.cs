@@ -72,21 +72,14 @@ namespace Assignment.Controllers
             try
             {
                 var department = departmentDTO.Adapt<Department>();
-                if (ModelState.IsValid)
-                {
-                    int Id = await _departmentRepository.AddDepartmentAsync(department);
-                    var resultDto = department.Adapt<DepartmentDTO>();
+                int Id = await _departmentRepository.AddDepartmentAsync(department);
+                var resultDto = department.Adapt<DepartmentDTO>();
 
-                    return CreatedAtAction(
-                        nameof(GetDepartmentById),
-                        new { Id },
-                        resultDto
-                    );
-                }
-                else
-                {
-                    return BadRequest(ModelState);
-                }
+                return CreatedAtAction(
+                    nameof(GetDepartmentById),
+                    new { Id },
+                    resultDto
+                );
             }
             catch (ArgumentNullException ex)
             {
@@ -107,15 +100,8 @@ namespace Assignment.Controllers
             try
             {
                 var department = departmentDTO.Adapt<Department>();
-                if (ModelState.IsValid)
-                {
-                    await _departmentRepository.UpdateDepartmentAsync(id, department);
-                    return NoContent();
-                }
-                else
-                {
-                    return BadRequest(ModelState);
-                }
+                await _departmentRepository.UpdateDepartmentAsync(id, department);
+                return NoContent();
             }
             catch (ArgumentNullException ex)
             {

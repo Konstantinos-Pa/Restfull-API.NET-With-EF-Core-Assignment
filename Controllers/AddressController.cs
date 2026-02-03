@@ -97,21 +97,14 @@ namespace Assignment.Controllers
             try
             {
                 var address = addressDTO.Adapt<Address>();
-                if (ModelState.IsValid)
-                {
-                    int Id = await _addressRepository.AddAddressAsync(address);
-                    var resultDto = address.Adapt<AddressDTO>();
+                int Id = await _addressRepository.AddAddressAsync(address);
+                var resultDto = address.Adapt<AddressDTO>();
 
-                    return CreatedAtAction(
-                        nameof(GetAddressById),
-                        new { Id },
-                        resultDto
-                    );
-                }
-                else
-                {
-                    return BadRequest(ModelState);
-                }
+                return CreatedAtAction(
+                    nameof(GetAddressById),
+                    new { Id },
+                    resultDto
+                );
             }
             catch (ArgumentNullException ex)
             {
@@ -132,15 +125,8 @@ namespace Assignment.Controllers
             try
             {
                 var address = addressDTO.Adapt<Address>();
-                if (ModelState.IsValid)
-                {
-                    await _addressRepository.UpdateAddressAsync(id, address);
-                    return NoContent();
-                }
-                    else
-                {
-                    return BadRequest(ModelState);
-                }
+                await _addressRepository.UpdateAddressAsync(id, address);
+                return NoContent();
             }
             catch (ArgumentNullException ex)
             {

@@ -63,10 +63,6 @@ namespace Assignment.Controllers
         public async Task<IActionResult> PostQuestions([FromBody] QuestionDTO QuestionDTO)
         {
                 var question = QuestionDTO.Adapt<Question>();
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
 
                 int Id = await _repository.AddQuestionsAsync(question);
                 var resultDto = question.Adapt<QuestionDTO>();
@@ -89,10 +85,6 @@ namespace Assignment.Controllers
             try
             {
                 var question = questionDTO.Adapt<Question>();
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
 
                 await _repository.UpdateQuestionsAsync(id, question);
                 return NoContent();

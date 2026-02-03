@@ -19,57 +19,50 @@ namespace Project_Bootcamp_2025.Authentication
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] CandidateCDTO model)
         {
-            if (ModelState.IsValid)
+            var existedUser = await accountUser.FindByNameAsync(model.UserName);
+            if (existedUser != null)
             {
-                var existedUser = await accountUser.FindByNameAsync(model.UserName);
-                if (existedUser != null)
+                ModelState.AddModelError("error", "User name is already taken.");
+                return BadRequest(ModelState);
+            }
+            var user = model.Adapt<Candidate>();
+            user.SecurityStamp = Guid.NewGuid().ToString();
+            //try to save user
+            var result = await accountUser.CreateAsync(user, model.Password);
+            if (result.Succeeded)
+            {
+                //try to assign role
+                var roleresult = await accountUser.AddToRoleAsync(user, AppRoles.User);
+                if (roleresult.Succeeded)
                 {
-                    ModelState.AddModelError("error", "User name is already taken.");
-                    return BadRequest(ModelState);
-                }
-                var user = model.Adapt<Candidate>();
-                user.SecurityStamp = Guid.NewGuid().ToString();
-                //try to save user
-                var result = await accountUser.CreateAsync(user, model.Password);
-                if (result.Succeeded)
-                {
-                    //try to assign role
-                    var roleresult = await accountUser.AddToRoleAsync(user, AppRoles.User);
-                    if (roleresult.Succeeded)
-                    {
-                        return Ok();
-                    }
-                }
-                //if there is are errors, add then to the ModelState object
-                //and return the error to the client
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError("error", error.Description);
+                    return Ok();
                 }
             }
-            return BadRequest(ModelState);
+            //if there is are errors, add then to the ModelState object
+            //and return the error to the client
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError("error", error.Description);
+            }
 
         }
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] Login model)
         {
-            if (ModelState.IsValid)
+            var user = await accountUser.FindByNameAsync(model.UserName);
+            if (user != null)
             {
-                var user = await accountUser.FindByNameAsync(model.UserName);
-                if (user != null)
+                if (await accountUser.CheckPasswordAsync(user, model.Password))
                 {
-                    if (await accountUser.CheckPasswordAsync(user, model.Password))
-                    {
-                        var token = GenerateToken(user,model.UserName);
-                        var Id = user.Id;
-                        return Ok(new { token });
-                    }
+                    var token = GenerateToken(user, model.UserName);
+                    var Id = user.Id;
+                    return Ok(new { token });
                 }
-                ModelState.AddModelError("error", "Invalid username or password");
             }
+            ModelState.AddModelError("error", "Invalid username or password");
             return BadRequest(ModelState);
         }
-        private async Task<string?> GenerateToken(Candidate model,string userName)
+        private async Task<string?> GenerateToken(Candidate model, string userName)
         {
             var secret = configuration["JwtConfig:Secret"];
             var issuer = configuration["JwtConfig:ValidIssuer"];

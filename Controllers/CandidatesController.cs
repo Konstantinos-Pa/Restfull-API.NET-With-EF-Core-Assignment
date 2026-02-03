@@ -88,15 +88,8 @@ namespace Assignment.Controllers
             try
             {
                 var candidate = candidateDTO.Adapt<Candidate>();
-                if (ModelState.IsValid)
-                {
-                    await _candidatesRepository.UpdateCandidateAsync(id, candidate);
-                    return NoContent();
-                }
-                else
-                {
-                    return BadRequest(ModelState);
-                }
+                await _candidatesRepository.UpdateCandidateAsync(id, candidate);
+                return NoContent();
             }
             catch (ArgumentNullException ex)
             {

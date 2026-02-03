@@ -65,10 +65,6 @@ namespace Assignment.Controllers
             try
             {
                 var photoId = photoIdDTO.Adapt<PhotoId>();
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
 
                 int Id = await _repository.AddPhotoIdAsync(photoId);
                 var resultDto = photoId.Adapt<PhotoIdDTO>();
@@ -103,12 +99,8 @@ namespace Assignment.Controllers
             try
             {
                 var photoId = photoIdDTO.Adapt<PhotoId>();
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
 
-                await _repository.UpdatePhotoIdAsync(id,photoId);
+                await _repository.UpdatePhotoIdAsync(id, photoId);
                 return NoContent();
             }
             catch (ArgumentNullException ex)

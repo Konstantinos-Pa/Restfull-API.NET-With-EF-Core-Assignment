@@ -107,15 +107,8 @@ namespace Assignment.Controllers
             try
             {
                 var analytics = analyticsDTO.Adapt<CandidatesAnalytics>();
-                if (ModelState.IsValid)
-                {
-                    await _repository.UpdateCandidatesAnalyticsAsync(id, analytics);
-                    return NoContent();
-                }
-                else
-                {
-                    return BadRequest(ModelState);
-                }
+                await _repository.UpdateCandidatesAnalyticsAsync(id, analytics);
+                return NoContent();
             }
             catch (ArgumentNullException ex)
             {

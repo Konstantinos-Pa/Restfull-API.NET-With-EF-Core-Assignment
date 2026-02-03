@@ -65,10 +65,6 @@ namespace Assignment.Controllers
             try
             {
                 var SaleCertificate = SaleCertificateDTO.Adapt<SaleCertificate>();
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
 
                 await _context.UpdateSaleCertificateAsync(id, SaleCertificate);
 
@@ -92,10 +88,6 @@ namespace Assignment.Controllers
             try
             {
                 var SaleCertificate = SaleCertificateDTO.Adapt<SaleCertificate>();
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
 
                 int Id = await _context.AddSaleCertificateAsync(SaleCertificate);
                 var resultDto = SaleCertificate.Adapt<SaleCertificateDTO>();

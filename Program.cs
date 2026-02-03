@@ -53,9 +53,14 @@ namespace Assignment
             builder.Services.AddScoped<IDepartmentRepository,DepartmentRepository>();
             builder.Services.AddSingleton<IAiRoutingService, AiRoutingService>();
 
-            builder.Services.AddControllers()
+            builder.Services.AddControllers(options =>
+            {
+                // Add global model validation filter
+                options.Filters.Add<ValidateModelAttribute>();
+            })
              .AddJsonOptions(options =>
              {
+                 // Avoid circular reference errors when serializing
                  options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
              });
 
