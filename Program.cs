@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -16,12 +17,27 @@ namespace Assignment
     {
         public static async Task Main(string[] args)
         {
+            var configuration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .AddEnvironmentVariables()
+                .Build();
+
+            Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(configuration)
+                .CreateLogger();
+
+            Log.Information("Starting up the application");
+
             var builder = WebApplication.CreateBuilder(args);
 
+            // Use Serilog ONLY
+            builder.Logging.ClearProviders();
+            builder.Host.UseSerilog();
+
             // Add services to the container.
-             builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
-                options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")
-             ));
+            builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
+               options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")
+            ));
 
             //for singleton services to use db context
             builder.Services.AddDbContextFactory<ApplicationDbContext>(options =>
@@ -33,7 +49,7 @@ namespace Assignment
             {
                 options.AddDefaultPolicy(policy =>
                 {
-                    policy.WithOrigins("http://localhost:5174","http://localhost:5173") // Frontend URL
+                    policy.WithOrigins("http://localhost:5174", "http://localhost:5173") // Frontend URL
                           .AllowAnyMethod()  // GET, POST, etc.
                           .AllowAnyHeader(); // Custom headers
                 });
@@ -50,7 +66,7 @@ namespace Assignment
             builder.Services.AddScoped<ICandidatesAnalyticsRepository, CandidatesAnalyticsRepository>();
             builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
             builder.Services.AddScoped<ISaleCertificatesRepository, SaleCertificatesRepository>();
-            builder.Services.AddScoped<IDepartmentRepository,DepartmentRepository>();
+            builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
             builder.Services.AddSingleton<IAiRoutingService, AiRoutingService>();
 
             builder.Services.AddControllers(options =>
@@ -105,12 +121,12 @@ namespace Assignment
                 options.CustomSchemaIds(type => type.FullName);
             });
 
-            builder.Services.AddAuthorization( options =>
+            builder.Services.AddAuthorization(options =>
             {
-                    options.AddPolicy("RequireAdministratorRole", policy =>
-                    policy.RequireRole(AppRoles.Administrator));
-                    options.AddPolicy("RequireUserRole", policy =>
-                    policy.RequireRole(AppRoles.User));
+                options.AddPolicy("RequireAdministratorRole", policy =>
+                policy.RequireRole(AppRoles.Administrator));
+                options.AddPolicy("RequireUserRole", policy =>
+                policy.RequireRole(AppRoles.User));
             });
 
 
@@ -153,7 +169,20 @@ namespace Assignment
 
             app.MapControllers();
 
-            app.Run();
+            try
+            {
+                app.Run();
+            }
+            catch (Exception ex)
+            {
+                Log.Fatal(ex, "Application terminated unexpectedly");
+            }
+            finally
+            {
+                Log.Information("Application shutting down");
+                Log.CloseAndFlush();
+            }
+
         }
     }
 }
